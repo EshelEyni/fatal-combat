@@ -1,0 +1,159 @@
+import { Sprite, type SpriteConfig } from "./Sprite";
+
+export interface FighterSprite {
+  imageSrc: string;
+  image?: HTMLImageElement;
+  framesMax: number;
+}
+
+export interface FighterSprites {
+  idle: FighterSprite;
+  run: FighterSprite;
+  jump: FighterSprite;
+  fall: FighterSprite;
+  attack1: FighterSprite;
+  takeHit: FighterSprite;
+  death: FighterSprite;
+  [key: string]: FighterSprite;
+}
+
+export interface AttackBoxConfig {
+  offset: { x: number; y: number };
+  width: number;
+  height: number;
+}
+
+export interface FighterConfig extends SpriteConfig {
+  velocity: { x: number; y: number };
+  color?: string;
+  sprites: FighterSprites;
+  attackBox: AttackBoxConfig;
+}
+
+export class Fighter extends Sprite {
+  velocity: { x: number; y: number };
+  color: string;
+  isAttacking: boolean = false;
+  health: number = 100;
+  lastKey?: string;
+  sprites: FighterSprites;
+  dead: boolean = false;
+
+  attackBox: {
+    position: { x: number; y: number };
+    offset: { x: number; y: number };
+    width: number;
+    height: number;
+  };
+
+  constructor({
+    position,
+    velocity,
+    color = "red",
+    imageSrc,
+    scale = 1,
+    framesMax = 1,
+    offset = { x: 0, y: 0 },
+    sprites,
+    attackBox,
+  }: FighterConfig) {
+    super({ position, imageSrc, scale, framesMax, offset });
+
+    this.velocity = velocity;
+    this.color = color;
+    this.sprites = sprites;
+
+    this.attackBox = {
+      position: { x: position.x, y: position.y },
+      offset: attackBox.offset,
+      width: attackBox.width,
+      height: attackBox.height,
+    };
+
+    // preload sprite images
+    for (const key in this.sprites) {
+      const sprite = this.sprites[key];
+      if (!sprite) continue;
+      sprite.image = new Image();
+      sprite.image.src = sprite.imageSrc;
+    }
+  }
+
+  update(
+    c: CanvasRenderingContext2D,
+    canvas?: HTMLCanvasElement,
+    gravity?: number
+  ) {
+    this.draw(c);
+
+    if (!this.dead) this.animateFrames();
+
+    // attack box
+    this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
+    this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
+
+    // movement
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+
+    // gravity
+    if (canvas && gravity !== undefined) {
+      if (
+        this.position.y + this.height + this.velocity.y >=
+        canvas.height - 96
+      ) {
+        this.velocity.y = 0;
+        this.position.y = canvas.height - this.height - 96;
+      } else {
+        this.velocity.y += gravity;
+      }
+    }
+  }
+
+  attack() {
+    this.switchSprite("attack1");
+    this.isAttacking = true;
+  }
+
+  takeHit() {
+    this.health -= 20;
+
+    if (this.health <= 0) {
+      this.switchSprite("death");
+    } else {
+      this.switchSprite("takeHit");
+    }
+  }
+
+  switchSprite(sprite: string) {
+    if (this.image === this.sprites.death.image) {
+      if (this.framesCurrent === this.sprites.death.framesMax - 1) {
+        this.dead = true;
+      }
+      return;
+    }
+
+    // lock attack animation
+    if (
+      this.image === this.sprites.attack1.image &&
+      this.framesCurrent < this.sprites.attack1.framesMax - 1
+    )
+      return;
+
+    // lock getting hit animation
+    if (
+      this.image === this.sprites.takeHit.image &&
+      this.framesCurrent < this.sprites.takeHit.framesMax - 1
+    )
+      return;
+
+    const spr = this.sprites[sprite];
+    if (!spr) return;
+
+    if (this.image !== spr.image) {
+      this.image = spr.image!;
+      this.framesMax = spr.framesMax;
+      this.framesCurrent = 0;
+    }
+  }
+}
