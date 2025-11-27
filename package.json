@@ -1,0 +1,15 @@
+{
+  "name": "fatal-combat",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev"
+  },
+  "dependencies": {
+    "concurrently": "^8.0.1"
+  }
+}
