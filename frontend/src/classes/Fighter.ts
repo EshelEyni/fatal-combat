@@ -1,5 +1,7 @@
-import { gameConfig } from "../services/game";
+import { canvasConfig } from "../config/canvas";
 import { Sprite, type SpriteConfig } from "./Sprite";
+
+const GRAVITY = 1;
 
 export interface FighterSprite {
   imageSrc: string;
@@ -95,12 +97,12 @@ export class Fighter extends Sprite {
 
     if (
       this.position.y + this.height + this.velocity.y >=
-      gameConfig.canvasHeight - 96
+      canvasConfig.height - 96
     ) {
       this.velocity.y = 0;
-      this.position.y = gameConfig.canvasHeight - this.height - 96;
+      this.position.y = canvasConfig.height - this.height - 96;
     } else {
-      this.velocity.y += gameConfig.gravity;
+      this.velocity.y += GRAVITY;
     }
   }
 
