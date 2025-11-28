@@ -17,6 +17,7 @@ export class Sprite {
   framesElapsed: number = 0;
   framesHold: number = 5;
   offset: { x: number; y: number };
+  loaded = false;
 
   constructor({
     position,
@@ -31,9 +32,14 @@ export class Sprite {
     this.scale = scale;
     this.framesMax = framesMax;
     this.offset = offset;
+
+    this.image.onload = () => {
+      this.loaded = true;
+    };
   }
 
   draw(c: CanvasRenderingContext2D) {
+    if (!this.loaded) return;
     const frameWidth = this.image.width / this.framesMax;
 
     c.drawImage(
