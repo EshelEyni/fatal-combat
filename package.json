@@ -10,6 +10,7 @@
     "dev:backend": "npm --prefix backend run dev"
   },
   "dependencies": {
-    "concurrently": "^8.0.1"
+    "concurrently": "^8.0.1",
+    "gsap": "^3.13.0"
   }
 }

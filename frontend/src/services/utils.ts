@@ -16,17 +16,26 @@ export function rectangularCollision({
   rectangle1,
   rectangle2,
 }: {
-  rectangle1: FighterLike;
-  rectangle2: FighterLike;
+  rectangle1: AttackBox;
+  rectangle2: AttackBox;
 }): boolean {
+  const isRightSideTouching =
+    rectangle1.position.x + rectangle1.width >= rectangle2.position.x;
+
+  const isLeftSideTouching =
+    rectangle1.position.x <= rectangle2.position.x + rectangle2.width;
+
+  const isBottomSideTouching =
+    rectangle1.position.y + rectangle1.height >= rectangle2.position.y;
+
+  const isTopSideTouching =
+    rectangle1.position.y <= rectangle2.position.y + rectangle2.height;
+
   return (
-    rectangle1.attackBox.position.x + rectangle1.attackBox.width >=
-      rectangle2.position.x &&
-    rectangle1.attackBox.position.x <=
-      rectangle2.position.x + rectangle2.width &&
-    rectangle1.attackBox.position.y + rectangle1.attackBox.height >=
-      rectangle2.position.y &&
-    rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
+    isRightSideTouching &&
+    isLeftSideTouching &&
+    isBottomSideTouching &&
+    isTopSideTouching
   );
 }
 
@@ -56,7 +65,7 @@ export function determineWinner({
 }
 
 let timer = 60;
-let timerId: number;
+export let timerId: number;
 
 export function decreaseTimer(player: FighterLike, enemy: FighterLike) {
   const timerEl = document.querySelector("#timer") as HTMLElement;

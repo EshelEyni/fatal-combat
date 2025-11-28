@@ -1,6 +1,6 @@
 import { Sprite } from "../classes/Sprite";
 import { Fighter } from "../classes/Fighter";
-// import { rectangularCollision, decreaseTimer } from "./utils"
+import { gsap } from "gsap";
 import backgroundImage from "../assets/img/background.png";
 import shopImage from "../assets/img/shop.png";
 import samuraiMackIdle from "../assets/img/samuraiMack/Idle.png";
@@ -18,11 +18,18 @@ import kenjiFall from "../assets/img/kenji/Fall.png";
 import kenjiAttack1 from "../assets/img/kenji/Attack1.png";
 import kenjiTakeHit from "../assets/img/kenji/Take hit.png";
 import kenjiDeath from "../assets/img/kenji/Death.png";
+import { determineWinner, rectangularCollision, timerId } from "./utils";
+
+export const gameConfig = {
+  canvasWidth: 1024,
+  canvasHeight: 576,
+  gravity: 0.7,
+};
 
 export function startGameEngine(canvas: HTMLCanvasElement) {
   const c = canvas.getContext("2d")!;
-  canvas.width = 1024;
-  canvas.height = 576;
+  canvas.width = gameConfig.canvasWidth;
+  canvas.height = gameConfig.canvasHeight;
 
   //   const gravity = 0.7;
 
@@ -47,17 +54,13 @@ export function startGameEngine(canvas: HTMLCanvasElement) {
       x: 0,
       y: 0,
     },
-    offset: {
-      x: 0,
-      y: 0,
-    },
     imageSrc: samuraiMackIdle,
     framesMax: 8,
     scale: 2.5,
-    // offset: {
-    //   x: 215,
-    //   y: 157,
-    // },
+    offset: {
+      x: 215,
+      y: 157,
+    },
     sprites: {
       idle: {
         imageSrc: samuraiMackIdle,
@@ -108,17 +111,13 @@ export function startGameEngine(canvas: HTMLCanvasElement) {
       y: 0,
     },
     color: "blue",
-    offset: {
-      x: -50,
-      y: 0,
-    },
     imageSrc: kenjiIdle,
     framesMax: 4,
     scale: 2.5,
-    // offset: {
-    //   x: 215,
-    //   y: 167,
-    // },
+    offset: {
+      x: 215,
+      y: 167,
+    },
     sprites: {
       idle: {
         imageSrc: kenjiIdle,
@@ -177,10 +176,107 @@ export function startGameEngine(canvas: HTMLCanvasElement) {
     background.update(c);
     shop.update(c);
 
+    c.fillStyle = "rgba(255, 255, 255, 0.15)";
+    c.fillRect(0, 0, canvas.width, canvas.height);
+
     player.update(c);
     enemy.update(c);
 
-    // movement, collision — same as vanilla (you already TS-converted it)
+    // player movement
+
+    if (keys.a.pressed && player.lastKey === "a") {
+      player.velocity.x = -5;
+      player.switchSprite("run");
+    } else if (keys.d.pressed && player.lastKey === "d") {
+      player.velocity.x = 5;
+      player.switchSprite("run");
+    } else {
+      player.velocity.x = 0;
+      player.switchSprite("idle");
+    }
+
+    // jumping
+    if (player.velocity.y < 0) {
+      player.switchSprite("jump");
+    } else if (player.velocity.y > 0) {
+      player.switchSprite("fall");
+    }
+
+    // Enemy movement
+    if (keys.ArrowLeft.pressed && enemy.lastKey === "ArrowLeft") {
+      enemy.velocity.x = -5;
+      enemy.switchSprite("run");
+    } else if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
+      enemy.velocity.x = 5;
+      enemy.switchSprite("run");
+    } else {
+      enemy.velocity.x = 0;
+      enemy.switchSprite("idle");
+    }
+
+    // jumping
+    if (enemy.velocity.y < 0) {
+      enemy.switchSprite("jump");
+    } else if (enemy.velocity.y > 0) {
+      enemy.switchSprite("fall");
+    }
+
+    // detect for collision & enemy gets hit
+    if (
+      rectangularCollision({
+        rectangle1: player.attackBox,
+        rectangle2: {
+          position: enemy.position,
+          width: enemy.width,
+          height: enemy.height,
+        },
+      }) &&
+      player.isAttacking &&
+      player.framesCurrent === 4
+    ) {
+      enemy.takeHit();
+      player.isAttacking = false;
+
+      gsap.to("#enemyHealth", {
+        width: enemy.health + "%",
+      });
+    }
+
+    // if player misses
+    if (player.isAttacking && player.framesCurrent === 4) {
+      player.isAttacking = false;
+    }
+
+    // this is where our player gets hit
+    if (
+      rectangularCollision({
+        rectangle1: enemy.attackBox,
+        rectangle2: {
+          position: player.position,
+          width: player.width,
+          height: player.height,
+        },
+      }) &&
+      enemy.isAttacking &&
+      enemy.framesCurrent === 2
+    ) {
+      player.takeHit();
+      enemy.isAttacking = false;
+
+      gsap.to("#playerHealth", {
+        width: player.health + "%",
+      });
+    }
+
+    // if player misses
+    if (enemy.isAttacking && enemy.framesCurrent === 2) {
+      enemy.isAttacking = false;
+    }
+
+    // end game based on health
+    if (enemy.health <= 0 || player.health <= 0) {
+      determineWinner({ player, enemy, timerId: timerId });
+    }
   }
 
   animate();

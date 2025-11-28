@@ -1,3 +1,4 @@
+import { gameConfig } from "../services/game";
 import { Sprite, type SpriteConfig } from "./Sprite";
 
 export interface FighterSprite {
@@ -79,11 +80,7 @@ export class Fighter extends Sprite {
     }
   }
 
-  update(
-    c: CanvasRenderingContext2D,
-    canvas?: HTMLCanvasElement,
-    gravity?: number
-  ) {
+  update(c: CanvasRenderingContext2D) {
     this.draw(c);
 
     if (!this.dead) this.animateFrames();
@@ -96,17 +93,14 @@ export class Fighter extends Sprite {
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
-    // gravity
-    if (canvas && gravity !== undefined) {
-      if (
-        this.position.y + this.height + this.velocity.y >=
-        canvas.height - 96
-      ) {
-        this.velocity.y = 0;
-        this.position.y = canvas.height - this.height - 96;
-      } else {
-        this.velocity.y += gravity;
-      }
+    if (
+      this.position.y + this.height + this.velocity.y >=
+      gameConfig.canvasHeight - 96
+    ) {
+      this.velocity.y = 0;
+      this.position.y = gameConfig.canvasHeight - this.height - 96;
+    } else {
+      this.velocity.y += gameConfig.gravity;
     }
   }
 
