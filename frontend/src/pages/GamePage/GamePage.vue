@@ -1,10 +1,10 @@
 <template>
   <div class="game-wrapper">
     <GameCanvas ref="gameCanvasComponent" />
-    <HealthBar :health="player.health" :align="'left'" />
-    <HealthBar :health="enemy.health" :align="'right'" />
+    <HealthBar :health="player_1.health" :align="'left'" />
+    <HealthBar :health="player_2.health" :align="'right'" />
     <TimerBox :time="timer" />
-    <!-- <DisplayText v-if="winner" :winner="winner" /> -->
+    <DisplayText v-if="winner" :winner="winner" />
   </div>
 </template>
 
@@ -13,14 +13,13 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import GameCanvas from "./components/GameCanvas.vue";
 import HealthBar from "./components/HealthBar.vue";
 import TimerBox from "./components/TimerBox.vue";
-// import DisplayText from "./components/DisplayText.vue";
+import DisplayText from "./components/DisplayText.vue";
 import { useGameEngine } from "./useGameEngine";
 import { createTimer, pickWinner, type Winner } from "./util";
 
 const gameCanvasComponent = ref<InstanceType<typeof GameCanvas> | null>(null);
 
-const { canvasEl, player, enemy } = useGameEngine();
-console.log(player);
+const { canvasEl, player_1, player_2 } = useGameEngine();
 
 const timer = ref(60);
 const winner = ref<Winner | null>(null);
@@ -28,7 +27,7 @@ const winner = ref<Winner | null>(null);
 const timerCtl = createTimer(
   60,
   (s) => (timer.value = s),
-  () => (winner.value = pickWinner(player.health, enemy.health))
+  () => (winner.value = pickWinner(player_1.health, player_2.health))
 );
 
 onMounted(() => {

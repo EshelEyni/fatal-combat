@@ -1,13 +1,15 @@
 <template>
-  <div v-if="visible" class="display-text">
-    {{ text }}
+  <div class="display-text">
+    <span v-if="winner === 'player'">Player 1 Wins!</span>
+    <span v-else-if="winner === 'enemy'">Player 2 Wins!</span>
+    <span v-else>Tie!</span>
   </div>
 </template>
 
 <script setup lang="ts">
+import { type Winner } from "../util";
 defineProps<{
-  text: string;
-  visible: boolean;
+  winner: Winner;
 }>();
 </script>
 

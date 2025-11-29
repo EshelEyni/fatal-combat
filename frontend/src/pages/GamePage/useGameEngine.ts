@@ -23,8 +23,8 @@ export function useGameEngine() {
 
   const background = new Sprite(canvasBackgroundConfig);
   const shop = new Sprite(shopCofnig);
-  const player = new Fighter(playerConfig);
-  const enemy = new Fighter(enemyConfig);
+  const player_1 = new Fighter(playerConfig);
+  const player_2 = new Fighter(enemyConfig);
 
   const animate = ({ canvas }: { canvas: HTMLCanvasElement }) => {
     const canvasContext = canvas.getContext("2d")!;
@@ -34,63 +34,66 @@ export function useGameEngine() {
     background.update(canvasContext);
     shop.update(canvasContext);
 
-    player.update(canvasContext);
-    enemy.update(canvasContext);
+    player_1.update(canvasContext);
+    player_2.update(canvasContext);
 
     // player movement
 
-    if (keysState.a.pressed && player.lastKey === "a") {
-      player.velocity.x = -5;
-      player.switchSprite("run");
-    } else if (keysState.d.pressed && player.lastKey === "d") {
-      player.velocity.x = 5;
-      player.switchSprite("run");
+    if (keysState.a.pressed && player_1.lastKey === "a") {
+      player_1.velocity.x = -5;
+      player_1.switchSprite("run");
+    } else if (keysState.d.pressed && player_1.lastKey === "d") {
+      player_1.velocity.x = 5;
+      player_1.switchSprite("run");
     } else {
-      player.velocity.x = 0;
-      player.switchSprite("idle");
+      player_1.velocity.x = 0;
+      player_1.switchSprite("idle");
     }
 
     // jumping
-    if (player.velocity.y < 0) {
-      player.switchSprite("jump");
-    } else if (player.velocity.y > 0) {
-      player.switchSprite("fall");
+    if (player_1.velocity.y < 0) {
+      player_1.switchSprite("jump");
+    } else if (player_1.velocity.y > 0) {
+      player_1.switchSprite("fall");
     }
 
     // Enemy movement
-    if (keysState.ArrowLeft.pressed && enemy.lastKey === "ArrowLeft") {
-      enemy.velocity.x = -5;
-      enemy.switchSprite("run");
-    } else if (keysState.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
-      enemy.velocity.x = 5;
-      enemy.switchSprite("run");
+    if (keysState.ArrowLeft.pressed && player_2.lastKey === "ArrowLeft") {
+      player_2.velocity.x = -5;
+      player_2.switchSprite("run");
+    } else if (
+      keysState.ArrowRight.pressed &&
+      player_2.lastKey === "ArrowRight"
+    ) {
+      player_2.velocity.x = 5;
+      player_2.switchSprite("run");
     } else {
-      enemy.velocity.x = 0;
-      enemy.switchSprite("idle");
+      player_2.velocity.x = 0;
+      player_2.switchSprite("idle");
     }
 
     // jumping
-    if (enemy.velocity.y < 0) {
-      enemy.switchSprite("jump");
-    } else if (enemy.velocity.y > 0) {
-      enemy.switchSprite("fall");
+    if (player_2.velocity.y < 0) {
+      player_2.switchSprite("jump");
+    } else if (player_2.velocity.y > 0) {
+      player_2.switchSprite("fall");
     }
 
     // detect for collision & enemy gets hit
     if (
       didAttackHit({
-        rectangle1: player.attackBox,
+        rectangle1: player_1.attackBox,
         rectangle2: {
-          position: enemy.position,
-          width: enemy.width,
-          height: enemy.height,
+          position: player_2.position,
+          width: player_2.width,
+          height: player_2.height,
         },
       }) &&
-      player.isAttacking &&
-      player.framesCurrent === 4
+      player_1.isAttacking &&
+      player_1.framesCurrent === 4
     ) {
-      enemy.takeHit();
-      player.isAttacking = false;
+      player_2.takeHit();
+      player_1.isAttacking = false;
 
       // gsap.to("#enemyHealth", {
       //   width: enemy.health + "%",
@@ -98,25 +101,25 @@ export function useGameEngine() {
     }
 
     // if player misses
-    if (player.isAttacking && player.framesCurrent === 4) {
-      player.isAttacking = false;
+    if (player_1.isAttacking && player_1.framesCurrent === 4) {
+      player_1.isAttacking = false;
     }
 
     // this is where our player gets hit
     if (
       didAttackHit({
-        rectangle1: enemy.attackBox,
+        rectangle1: player_2.attackBox,
         rectangle2: {
-          position: player.position,
-          width: player.width,
-          height: player.height,
+          position: player_1.position,
+          width: player_1.width,
+          height: player_1.height,
         },
       }) &&
-      enemy.isAttacking &&
-      enemy.framesCurrent === 2
+      player_2.isAttacking &&
+      player_2.framesCurrent === 2
     ) {
-      player.takeHit();
-      enemy.isAttacking = false;
+      player_1.takeHit();
+      player_2.isAttacking = false;
 
       // gsap.to("#playerHealth", {
       //   width: player.health + "%",
@@ -124,51 +127,51 @@ export function useGameEngine() {
     }
 
     // if player misses
-    if (enemy.isAttacking && enemy.framesCurrent === 2) {
-      enemy.isAttacking = false;
+    if (player_2.isAttacking && player_2.framesCurrent === 2) {
+      player_2.isAttacking = false;
     }
 
     // end game based on health
-    if (enemy.health <= 0 || player.health <= 0) {
+    if (player_2.health <= 0 || player_1.health <= 0) {
       //   determineWinner({ player, enemy, timerId: timerId });
     }
   };
 
   const onKeyDown = (event: KeyboardEvent) => {
-    if (!player.dead) {
+    if (!player_1.dead) {
       switch (event.key) {
         case "d":
           keysState.d.pressed = true;
-          player.lastKey = "d";
+          player_1.lastKey = "d";
           break;
         case "a":
           keysState.a.pressed = true;
-          player.lastKey = "a";
+          player_1.lastKey = "a";
           break;
         case "w":
-          player.velocity.y = -20;
+          player_1.velocity.y = -20;
           break;
         case " ":
-          player.attack();
+          player_1.attack();
           break;
       }
     }
 
-    if (!enemy.dead) {
+    if (!player_2.dead) {
       switch (event.key) {
         case "ArrowRight":
           keysState.ArrowRight.pressed = true;
-          enemy.lastKey = "ArrowRight";
+          player_2.lastKey = "ArrowRight";
           break;
         case "ArrowLeft":
           keysState.ArrowLeft.pressed = true;
-          enemy.lastKey = "ArrowLeft";
+          player_2.lastKey = "ArrowLeft";
           break;
         case "ArrowUp":
-          enemy.velocity.y = -20;
+          player_2.velocity.y = -20;
           break;
         case "Control":
-          enemy.attack();
+          player_2.attack();
 
           break;
       }
@@ -213,5 +216,5 @@ export function useGameEngine() {
     window.removeEventListener("keyup", onKeyUp);
   });
 
-  return { canvasEl, background, shop, player, enemy, keysState };
+  return { canvasEl, background, shop, player_1, player_2, keysState };
 }
