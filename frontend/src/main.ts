@@ -1,5 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
+import "./assets/fonts/fonts.css";
+import "./style.css";
 
 import { createPinia } from "pinia";
 import { VueQueryPlugin } from "@tanstack/vue-query";
