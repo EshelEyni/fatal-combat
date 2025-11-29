@@ -1,13 +1,13 @@
 <template>
   <div class="display-text">
-    <span v-if="winner === 'player'">Player 1 Wins!</span>
-    <span v-else-if="winner === 'enemy'">Player 2 Wins!</span>
+    <span v-if="winner === 'player_1'">Player 1 Wins!</span>
+    <span v-else-if="winner === 'player_2'">Player 2 Wins!</span>
     <span v-else>Tie!</span>
   </div>
 </template>
 
 <script setup lang="ts">
-import { type Winner } from "../util";
+import { type Winner } from "../utils/timer";
 defineProps<{
   winner: Winner;
 }>();

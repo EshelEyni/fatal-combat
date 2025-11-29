@@ -1,5 +1,4 @@
 import { onBeforeUnmount, ref, watch } from "vue";
-import { didAttackHit } from "./util";
 import { Sprite } from "../../classes/Sprite";
 import { canvasBackgroundConfig } from "../../config/canvasBackground";
 import { shopCofnig } from "../../config/shop";
@@ -7,8 +6,8 @@ import { Fighter } from "../../classes/Fighter";
 import { playerConfig } from "../../config/player";
 import { enemyConfig } from "../../config/enemy";
 import { canvasConfig } from "../../config/canvas";
-
-type KeyState = { pressed: boolean };
+import { handlePlayerMovement } from "./utils/movement";
+import { handleAttackCollision } from "./utils/attack";
 
 export function useGameEngine() {
   const canvasEl = ref<HTMLCanvasElement | null>(null);
@@ -36,79 +35,43 @@ export function useGameEngine() {
     player_1.update(canvasContext);
     player_2.update(canvasContext);
 
-    // movement
-    handleHorizontalMovement(
-      player_1,
-      { left: keysState.a, right: keysState.d },
-      "KeyA",
-      "KeyD"
-    );
-    handleVerticalMovement(player_1);
-
-    handleHorizontalMovement(
-      player_2,
-      { left: keysState.ArrowLeft, right: keysState.ArrowRight },
-      "ArrowLeft",
-      "ArrowRight"
-    );
-    handleVerticalMovement(player_2);
-
-    // attacks
-    handleAttackCollision(player_1, player_2, 4);
-    handleAttackCollision(player_2, player_1, 2);
-  };
-
-  const handleHorizontalMovement = (
-    player: Fighter,
-    keys: { left: KeyState; right: KeyState },
-    lastLeft: string,
-    lastRight: string
-  ) => {
-    if (keys.left.pressed && player.lastKey === lastLeft) {
-      player.velocity.x = -8;
-      player.switchSprite("run");
-    } else if (keys.right.pressed && player.lastKey === lastRight) {
-      player.velocity.x = 8;
-      player.switchSprite("run");
-    } else {
-      player.velocity.x = 0;
-      player.switchSprite("idle");
-    }
-  };
-
-  const handleVerticalMovement = (player: Fighter) => {
-    if (player.velocity.y < 0) player.switchSprite("jump");
-    else if (player.velocity.y > 0) player.switchSprite("fall");
-  };
-
-  const handleAttackCollision = (
-    attacker: Fighter,
-    defender: Fighter,
-    hitFrame: number
-  ) => {
-    const hit = didAttackHit({
-      rectangle1: attacker.attackBox,
-      rectangle2: {
-        position: defender.position,
-        width: defender.width,
-        height: defender.height,
+    handlePlayerMovement(player_1, {
+      left: {
+        pressed: keysState.a.pressed,
+        keyCode: "KeyA",
+      },
+      right: {
+        pressed: keysState.d.pressed,
+        keyCode: "KeyD",
       },
     });
 
-    if (hit && attacker.isAttacking && attacker.framesCurrent === hitFrame) {
-      defender.takeHit();
-      attacker.isAttacking = false;
-    }
+    handlePlayerMovement(player_2, {
+      left: {
+        pressed: keysState.ArrowLeft.pressed,
+        keyCode: "ArrowLeft",
+      },
+      right: {
+        pressed: keysState.ArrowRight.pressed,
+        keyCode: "ArrowRight",
+      },
+    });
 
-    // reset miss
-    if (attacker.isAttacking && attacker.framesCurrent === hitFrame) {
-      attacker.isAttacking = false;
-    }
+    // attacks
+    handleAttackCollision({
+      attacker: player_1,
+      defender: player_2,
+      hitFrame: 4,
+    });
+
+    handleAttackCollision({
+      attacker: player_2,
+      defender: player_1,
+      hitFrame: 2,
+    });
   };
 
   const onKeyDown = (event: KeyboardEvent) => {
-    console.log(event.code);
-
     if (!player_1.dead) {
       switch (event.code) {
         case "KeyD":
@@ -150,17 +113,17 @@ export function useGameEngine() {
   };
 
   const onKeyUp = (event: KeyboardEvent) => {
-    switch (event.key) {
-      case "d":
+    switch (event.code) {
+      case "KeyD":
         keysState.d.pressed = false;
         break;
-      case "a":
+      case "KeyA":
         keysState.a.pressed = false;
         break;
     }
 
     // enemy keys
-    switch (event.key) {
+    switch (event.code) {
       case "ArrowRight":
         keysState.ArrowRight.pressed = false;
         break;
