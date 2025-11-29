@@ -8,6 +8,8 @@ import { playerConfig } from "../../config/player";
 import { enemyConfig } from "../../config/enemy";
 import { canvasConfig } from "../../config/canvas";
 
+type KeyState = { pressed: boolean };
+
 export function useGameEngine() {
   const canvasEl = ref<HTMLCanvasElement | null>(null);
   let animationId = 0;
@@ -31,99 +33,76 @@ export function useGameEngine() {
 
     background.update(canvasContext);
     shop.update(canvasContext);
-
     player_1.update(canvasContext);
     player_2.update(canvasContext);
 
-    // player movement
+    // movement
+    handleHorizontalMovement(
+      player_1,
+      { left: keysState.a, right: keysState.d },
+      "KeyA",
+      "KeyD"
+    );
+    handleVerticalMovement(player_1);
 
-    if (keysState.a.pressed && player_1.lastKey === "KeyA") {
-      player_1.velocity.x = -8;
-      player_1.switchSprite("run");
-    } else if (keysState.d.pressed && player_1.lastKey === "KeyD") {
-      player_1.velocity.x = 8;
-      player_1.switchSprite("run");
+    handleHorizontalMovement(
+      player_2,
+      { left: keysState.ArrowLeft, right: keysState.ArrowRight },
+      "ArrowLeft",
+      "ArrowRight"
+    );
+    handleVerticalMovement(player_2);
+
+    // attacks
+    handleAttackCollision(player_1, player_2, 4);
+    handleAttackCollision(player_2, player_1, 2);
+  };
+
+  const handleHorizontalMovement = (
+    player: Fighter,
+    keys: { left: KeyState; right: KeyState },
+    lastLeft: string,
+    lastRight: string
+  ) => {
+    if (keys.left.pressed && player.lastKey === lastLeft) {
+      player.velocity.x = -8;
+      player.switchSprite("run");
+    } else if (keys.right.pressed && player.lastKey === lastRight) {
+      player.velocity.x = 8;
+      player.switchSprite("run");
     } else {
-      player_1.velocity.x = 0;
-      player_1.switchSprite("idle");
+      player.velocity.x = 0;
+      player.switchSprite("idle");
+    }
+  };
+
+  const handleVerticalMovement = (player: Fighter) => {
+    if (player.velocity.y < 0) player.switchSprite("jump");
+    else if (player.velocity.y > 0) player.switchSprite("fall");
+  };
+
+  const handleAttackCollision = (
+    attacker: Fighter,
+    defender: Fighter,
+    hitFrame: number
+  ) => {
+    const hit = didAttackHit({
+      rectangle1: attacker.attackBox,
+      rectangle2: {
+        position: defender.position,
+        width: defender.width,
+        height: defender.height,
+      },
+    });
+
+    if (hit && attacker.isAttacking && attacker.framesCurrent === hitFrame) {
+      defender.takeHit();
+      attacker.isAttacking = false;
     }
 
-    // jumping
-    if (player_1.velocity.y < 0) {
-      player_1.switchSprite("jump");
-    } else if (player_1.velocity.y > 0) {
-      player_1.switchSprite("fall");
-    }
-
-    // Enemy movement
-    if (keysState.ArrowLeft.pressed && player_2.lastKey === "ArrowLeft") {
-      player_2.velocity.x = -8;
-      player_2.switchSprite("run");
-    } else if (
-      keysState.ArrowRight.pressed &&
-      player_2.lastKey === "ArrowRight"
-    ) {
-      player_2.velocity.x = 8;
-      player_2.switchSprite("run");
-    } else {
-      player_2.velocity.x = 0;
-      player_2.switchSprite("idle");
-    }
-
-    // jumping
-    if (player_2.velocity.y < 0) {
-      player_2.switchSprite("jump");
-    } else if (player_2.velocity.y > 0) {
-      player_2.switchSprite("fall");
-    }
-
-    // detect for collision & enemy gets hit
-    if (
-      didAttackHit({
-        rectangle1: player_1.attackBox,
-        rectangle2: {
-          position: player_2.position,
-          width: player_2.width,
-          height: player_2.height,
-        },
-      }) &&
-      player_1.isAttacking &&
-      player_1.framesCurrent === 4
-    ) {
-      player_2.takeHit();
-      player_1.isAttacking = false;
-    }
-
-    // if player misses
-    if (player_1.isAttacking && player_1.framesCurrent === 4) {
-      player_1.isAttacking = false;
-    }
-
-    // this is where our player gets hit
-    if (
-      didAttackHit({
-        rectangle1: player_2.attackBox,
-        rectangle2: {
-          position: player_1.position,
-          width: player_1.width,
-          height: player_1.height,
-        },
-      }) &&
-      player_2.isAttacking &&
-      player_2.framesCurrent === 2
-    ) {
-      player_1.takeHit();
-      player_2.isAttacking = false;
-    }
-
-    // if player misses
-    if (player_2.isAttacking && player_2.framesCurrent === 2) {
-      player_2.isAttacking = false;
-    }
-
-    // end game based on health
-    if (player_2.health <= 0 || player_1.health <= 0) {
-      //   determineWinner({ player, enemy, timerId: timerId });
+    // reset miss
+    if (attacker.isAttacking && attacker.framesCurrent === hitFrame) {
+      attacker.isAttacking = false;
     }
   };
 
