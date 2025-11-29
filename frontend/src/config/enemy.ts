@@ -61,4 +61,5 @@ export const enemyConfig = {
     width: 170,
     height: 50,
   },
+  facing: -1,
 };

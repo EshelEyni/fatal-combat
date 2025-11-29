@@ -59,8 +59,9 @@ export class Fighter extends Sprite {
     offset = { x: 0, y: 0 },
     sprites,
     attackBox,
+    facing = 1,
   }: FighterConfig) {
-    super({ position, imageSrc, scale, framesMax, offset });
+    super({ position, imageSrc, scale, framesMax, offset, facing });
 
     this.velocity = velocity;
     this.color = color;
@@ -82,24 +83,31 @@ export class Fighter extends Sprite {
     }
   }
 
-  update(c: CanvasRenderingContext2D) {
-    this.draw(c);
+  /** Call this per frame to face an x-target (usually enemy.position.x) */
+  faceToward(targetX: number) {
+    this.facing = targetX < this.position.x ? -1 : 1;
+  }
 
+  update(c: CanvasRenderingContext2D, enemy?: Fighter) {
+    // decide facing: prefer enemy position, fallback to velocity
+    if (enemy) {
+      this.faceToward(enemy.position.x);
+    } else if (this.velocity.x !== 0) {
+      this.facing = this.velocity.x < 0 ? -1 : 1;
+    }
+
+    this.draw(c);
     if (!this.dead) this.animateFrames();
 
-    // attack box
-    this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
+    // attack box follows fighter, mirrored by facing
+    this.attackBox.position.x =
+      this.facing === 1
+        ? this.position.x + this.attackBox.offset.x
+        : this.position.x - this.attackBox.offset.x - this.attackBox.width;
+
     this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
 
-    // c.fillStyle = this.color
-    // c.fillRect(
-    //   this.attackBox.position.x,
-    //   this.attackBox.position.y,
-    //   this.attackBox.width,
-    //   this.attackBox.height
-    // );
-
-    // movement
+    // movement & gravity
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
@@ -121,7 +129,6 @@ export class Fighter extends Sprite {
 
   takeHit() {
     this.health -= 5;
-
     if (this.health <= 0) {
       this.switchSprite("death");
     } else {
@@ -136,14 +143,12 @@ export class Fighter extends Sprite {
       }
       return;
     }
-
     // lock attack animation
     if (
       this.image === this.sprites.attack1.image &&
       this.framesCurrent < this.sprites.attack1.framesMax - 1
     )
       return;
-
     // lock getting hit animation
     if (
       this.image === this.sprites.takeHit.image &&
