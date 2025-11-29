@@ -1,5 +1,5 @@
 <template>
-  <div class="hb-container" :style="containerStyle">
+  <div class="hb-container" :class="align">
     <div class="hb-background"></div>
     <div class="hb-foreground" :style="{ width: health + '%' }"></div>
   </div>
@@ -8,21 +8,29 @@
 <script setup lang="ts">
 defineProps<{
   health: number;
-  align?: "left" | "right";
+  align: "left" | "right";
 }>();
-
-const containerStyle = {
-  justifyContent: "flex-end",
-};
 </script>
 
 <style scoped>
 .hb-container {
-  position: relative;
+  position: absolute;
+  top: 20px;
   height: 30px;
-  width: 100%;
+  width: calc(50% - 59px);
   display: flex;
   border: 4px solid white;
+}
+
+.hb-container.left {
+  left: 10px;
+  justify-content: flex-end;
+  border-right: none;
+}
+
+.hb-container.right {
+  right: 10px;
+  border-left: none;
 }
 
 .hb-background {
