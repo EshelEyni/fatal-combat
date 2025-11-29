@@ -1,6 +1,5 @@
-// src/game/useGameEngine.ts
 import { onBeforeUnmount, ref, watch } from "vue";
-import { didAttackHit } from "./util"; // re-export or point to your utils
+import { didAttackHit } from "./util";
 import { Sprite } from "../../classes/Sprite";
 import { canvasBackgroundConfig } from "../../config/canvasBackground";
 import { shopCofnig } from "../../config/shop";
@@ -8,7 +7,6 @@ import { Fighter } from "../../classes/Fighter";
 import { playerConfig } from "../../config/player";
 import { enemyConfig } from "../../config/enemy";
 import { canvasConfig } from "../../config/canvas";
-// import your Sprite/Fighter/configs exactly like in game.ts
 
 export function useGameEngine() {
   const canvasEl = ref<HTMLCanvasElement | null>(null);
@@ -39,11 +37,11 @@ export function useGameEngine() {
 
     // player movement
 
-    if (keysState.a.pressed && player_1.lastKey === "a") {
-      player_1.velocity.x = -5;
+    if (keysState.a.pressed && player_1.lastKey === "KeyA") {
+      player_1.velocity.x = -8;
       player_1.switchSprite("run");
-    } else if (keysState.d.pressed && player_1.lastKey === "d") {
-      player_1.velocity.x = 5;
+    } else if (keysState.d.pressed && player_1.lastKey === "KeyD") {
+      player_1.velocity.x = 8;
       player_1.switchSprite("run");
     } else {
       player_1.velocity.x = 0;
@@ -59,13 +57,13 @@ export function useGameEngine() {
 
     // Enemy movement
     if (keysState.ArrowLeft.pressed && player_2.lastKey === "ArrowLeft") {
-      player_2.velocity.x = -5;
+      player_2.velocity.x = -8;
       player_2.switchSprite("run");
     } else if (
       keysState.ArrowRight.pressed &&
       player_2.lastKey === "ArrowRight"
     ) {
-      player_2.velocity.x = 5;
+      player_2.velocity.x = 8;
       player_2.switchSprite("run");
     } else {
       player_2.velocity.x = 0;
@@ -94,10 +92,6 @@ export function useGameEngine() {
     ) {
       player_2.takeHit();
       player_1.isAttacking = false;
-
-      // gsap.to("#enemyHealth", {
-      //   width: enemy.health + "%",
-      // });
     }
 
     // if player misses
@@ -120,10 +114,6 @@ export function useGameEngine() {
     ) {
       player_1.takeHit();
       player_2.isAttacking = false;
-
-      // gsap.to("#playerHealth", {
-      //   width: player.health + "%",
-      // });
     }
 
     // if player misses
@@ -138,27 +128,29 @@ export function useGameEngine() {
   };
 
   const onKeyDown = (event: KeyboardEvent) => {
+    console.log(event.code);
+
     if (!player_1.dead) {
-      switch (event.key) {
-        case "d":
+      switch (event.code) {
+        case "KeyD":
           keysState.d.pressed = true;
-          player_1.lastKey = "d";
+          player_1.lastKey = "KeyD";
           break;
-        case "a":
+        case "KeyA":
           keysState.a.pressed = true;
-          player_1.lastKey = "a";
+          player_1.lastKey = "KeyA";
           break;
-        case "w":
+        case "KeyW":
           player_1.velocity.y = -20;
           break;
-        case " ":
+        case "Space":
           player_1.attack();
           break;
       }
     }
 
     if (!player_2.dead) {
-      switch (event.key) {
+      switch (event.code) {
         case "ArrowRight":
           keysState.ArrowRight.pressed = true;
           player_2.lastKey = "ArrowRight";
@@ -170,7 +162,7 @@ export function useGameEngine() {
         case "ArrowUp":
           player_2.velocity.y = -20;
           break;
-        case "Control":
+        case "Enter":
           player_2.attack();
 
           break;
