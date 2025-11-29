@@ -18,8 +18,16 @@ export interface FighterSprites {
   [key: string]: FighterSprite;
 }
 
+export type AttackBoxOffset = {
+  x: {
+    right: number;
+    left: number;
+  };
+  y: number;
+};
+
 export interface AttackBoxConfig {
-  offset: { x: number; y: number };
+  offset: AttackBoxOffset;
   width: number;
   height: number;
 }
@@ -42,7 +50,7 @@ export class Fighter extends Sprite {
 
   attackBox: {
     position: { x: number; y: number };
-    offset: { x: number; y: number };
+    offset: AttackBoxOffset;
     width: number;
     height: number;
   };
@@ -99,14 +107,29 @@ export class Fighter extends Sprite {
     // attack box follows fighter, mirrored by facing
     this.attackBox.position.x =
       this.facing === 1
-        ? this.position.x + this.attackBox.offset.x
-        : this.position.x - this.attackBox.offset.x - this.attackBox.width;
+        ? this.position.x + this.attackBox.offset.x.right
+        : this.position.x - this.attackBox.offset.x.left - this.attackBox.width;
+
+    // c.fillStyle = "rgba(0, 255, 0, 0.5)";
+    // c.fillRect(
+    //   this.attackBox.position.x,
+    //   this.attackBox.position.y,
+    //   this.attackBox.width,
+    //   this.attackBox.height
+    // );
 
     this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
 
     // movement & gravity
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
+    const nextXValue = this.position.x + this.velocity.x;
+    if (nextXValue >= 0 && nextXValue + this.width <= canvasConfig.width) {
+      this.position.x += this.velocity.x;
+    }
+    const nextYValue = this.position.y + this.velocity.y;
+
+    if (nextYValue > canvasConfig.topLimit) {
+      this.position.y += this.velocity.y;
+    }
 
     if (
       this.position.y + this.height + this.velocity.y >=

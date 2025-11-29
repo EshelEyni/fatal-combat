@@ -3,5 +3,5 @@ export const canvasConfig = {
   height: 576,
   gravity: 1,
   topLimit: -500,
-  sideLimit: 250,
+  sideLimit: 100,
 };

@@ -83,8 +83,6 @@ export function useGameEngine() {
           player_1.lastKey = "KeyA";
           break;
         case "KeyW":
-          const isAboveJumpLimit = player_1.position.y < canvasConfig.topLimit;
-          if (isAboveJumpLimit) break;
           player_1.velocity.y = -20;
           break;
         case "KeyS":
@@ -107,8 +105,6 @@ export function useGameEngine() {
           player_2.lastKey = "ArrowLeft";
           break;
         case "ArrowUp":
-          const isAboveJumpLimit = player_2.position.y < canvasConfig.topLimit;
-          if (isAboveJumpLimit) break;
           player_2.velocity.y = -20;
           break;
         case "ArrowDown":

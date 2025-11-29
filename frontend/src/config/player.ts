@@ -8,7 +8,7 @@ import samuraiMackDeath from "../assets/img/samuraiMack/Death.png";
 
 export const playerConfig = {
   position: {
-    x: 0,
+    x: 250,
     y: 0,
   },
   velocity: {
@@ -54,7 +54,10 @@ export const playerConfig = {
   },
   attackBox: {
     offset: {
-      x: 100,
+      x: {
+        right: 100,
+        left: 28,
+      },
       y: 50,
     },
     width: 160,
