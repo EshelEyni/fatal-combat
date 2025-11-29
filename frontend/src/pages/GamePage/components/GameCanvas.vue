@@ -1,32 +1,25 @@
-<template>
-  <canvas
-    ref="canvasRef"
-    width="1024"
-    height="576"
-    class="game-canvas"
-  ></canvas>
-</template>
-
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from "vue";
-import { startGameEngine } from "../../../services/game";
+import { ref } from "vue";
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
-let stopGame: (() => void) | null = null;
 
-onMounted(() => {
-  if (canvasRef.value) {
-    stopGame = startGameEngine(canvasRef.value);
-  }
-});
-
-onBeforeUnmount(() => {
-  stopGame?.();
-});
+// Expose the ref so parent can access it
+defineExpose({ canvasRef });
 </script>
 
+<template>
+  <div class="game-canvas-wrapper">
+    <canvas ref="canvasRef"></canvas>
+  </div>
+</template>
+
 <style scoped>
-.game-canvas {
-  display: block;
+.game-canvas-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+canvas {
+  border: 1px solid black;
 }
 </style>

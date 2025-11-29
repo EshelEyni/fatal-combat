@@ -1,44 +1,45 @@
 <template>
   <div class="game-wrapper">
-    <div class="hud-wrapper">
-      <!-- Player Health -->
-      <HealthBar :health="playerHealth" />
-
-      <!-- Timer -->
-      <TimerBox :time="timer" />
-
-      <!-- Enemy Health -->
-      <HealthBar :health="enemyHealth" />
-    </div>
-
-    <DisplayText :text="displayText" :visible="displayTextVisible" />
-
-    <!-- The canvas -->
-    <GameCanvas />
+    <GameCanvas ref="gameCanvasComponent" />
+    <!-- <HealthBar :player="player" :enemy="enemy" />
+    <TimerBox :time="timer" />
+    <DisplayText v-if="winner" :winner="winner" /> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import GameCanvas from "./components/GameCanvas.vue";
-import HealthBar from "./components/HealthBar.vue";
-import TimerBox from "./components/TimerBox.vue";
-import DisplayText from "./components/DisplayText.vue";
+// import HealthBar from "./components/HealthBar.vue";
+// import TimerBox from "./components/TimerBox.vue";
+// import DisplayText from "./components/DisplayText.vue";
+import { useGameEngine } from "./useGameEngine";
+import { createTimer, pickWinner, type Winner } from "./util";
 
-const playerHealth = ref(100);
-const enemyHealth = ref(100);
+const gameCanvasComponent = ref<InstanceType<typeof GameCanvas> | null>(null);
+
+const { canvasEl, player, enemy } = useGameEngine();
+
 const timer = ref(60);
+const winner = ref<Winner | null>(null);
 
-const displayText = ref("Tie");
-const displayTextVisible = ref(false);
+const timerCtl = createTimer(
+  60,
+  (s) => (timer.value = s),
+  () => {
+    // when time’s up, ask pure function for winner
+    winner.value = pickWinner(player.health, enemy.health);
+  }
+);
 
-/**
- * Here you will connect the game engine to Vue refs
- * (when multiplayer comes in, we'll move this to Pinia)
- */
 onMounted(() => {
-  // TODO: Connect real game engine events (we'll do this next)
+  // Access the exposed canvasRef from the child component
+  if (gameCanvasComponent.value) {
+    canvasEl.value = gameCanvasComponent.value.canvasRef;
+    timerCtl.start();
+  }
 });
+onBeforeUnmount(() => timerCtl.stop());
 </script>
 
 <style scoped>

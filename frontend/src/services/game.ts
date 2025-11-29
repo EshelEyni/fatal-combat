@@ -1,12 +1,11 @@
 import { Sprite } from "../classes/Sprite";
 import { Fighter } from "../classes/Fighter";
-import { gsap } from "gsap";
 
 import { determineWinner, rectangularCollision, timerId } from "./utils";
 import { playerConfig } from "../config/player";
 import { enemyConfig } from "../config/enemy";
 import { shopCofnig } from "../config/shop";
-import { canvasBackground } from "../config/canvasBackground";
+import { canvasBackgroundConfig } from "../config/canvasBackground";
 import { canvasConfig } from "../config/canvas";
 
 const keysState = {
@@ -17,7 +16,7 @@ const keysState = {
 };
 
 const onCreateAnimations = () => {
-  const background = new Sprite(canvasBackground);
+  const background = new Sprite(canvasBackgroundConfig);
 
   const shop = new Sprite(shopCofnig);
 
@@ -108,9 +107,9 @@ const animate = ({
     enemy.takeHit();
     player.isAttacking = false;
 
-    gsap.to("#enemyHealth", {
-      width: enemy.health + "%",
-    });
+    // gsap.to("#enemyHealth", {
+    //   width: enemy.health + "%",
+    // });
   }
 
   // if player misses
@@ -134,9 +133,9 @@ const animate = ({
     player.takeHit();
     enemy.isAttacking = false;
 
-    gsap.to("#playerHealth", {
-      width: player.health + "%",
-    });
+    // gsap.to("#playerHealth", {
+    //   width: player.health + "%",
+    // });
   }
 
   // if player misses
