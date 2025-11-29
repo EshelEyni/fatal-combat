@@ -2,7 +2,7 @@ import type { Fighter } from "../../../classes/Fighter";
 
 type KeyState = { pressed: boolean; keyCode: string };
 
-export const handleHorizontalMovement = (
+const handleHorizontalMovement = (
   player: Fighter,
   keys: { left: KeyState; right: KeyState }
 ) => {
@@ -18,7 +18,7 @@ export const handleHorizontalMovement = (
   }
 };
 
-export const handleVerticalMovement = (player: Fighter) => {
+const handleVerticalMovement = (player: Fighter) => {
   if (player.velocity.y < 0) player.switchSprite("jump");
   else if (player.velocity.y > 0) player.switchSprite("fall");
 };

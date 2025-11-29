@@ -1,8 +1,6 @@
 import { canvasConfig } from "../config/canvas";
 import { Sprite, type SpriteConfig } from "./Sprite";
 
-const GRAVITY = 1;
-
 export interface FighterSprite {
   imageSrc: string;
   image?: HTMLImageElement;
@@ -83,7 +81,6 @@ export class Fighter extends Sprite {
     }
   }
 
-  /** Call this per frame to face an x-target (usually enemy.position.x) */
   faceToward(targetX: number) {
     this.facing = targetX < this.position.x ? -1 : 1;
   }
@@ -118,7 +115,7 @@ export class Fighter extends Sprite {
       this.velocity.y = 0;
       this.position.y = canvasConfig.height - this.height - 96;
     } else {
-      this.velocity.y += GRAVITY;
+      this.velocity.y += canvasConfig.gravity;
     }
   }
 

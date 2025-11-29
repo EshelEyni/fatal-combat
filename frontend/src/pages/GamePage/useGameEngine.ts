@@ -83,7 +83,12 @@ export function useGameEngine() {
           player_1.lastKey = "KeyA";
           break;
         case "KeyW":
+          const isAboveJumpLimit = player_1.position.y < canvasConfig.topLimit;
+          if (isAboveJumpLimit) break;
           player_1.velocity.y = -20;
+          break;
+        case "KeyS":
+          player_1.velocity.y = 20;
           break;
         case "Space":
           player_1.attack();
@@ -102,7 +107,12 @@ export function useGameEngine() {
           player_2.lastKey = "ArrowLeft";
           break;
         case "ArrowUp":
+          const isAboveJumpLimit = player_2.position.y < canvasConfig.topLimit;
+          if (isAboveJumpLimit) break;
           player_2.velocity.y = -20;
+          break;
+        case "ArrowDown":
+          player_2.velocity.y = 20;
           break;
         case "Enter":
           player_2.attack();
@@ -138,7 +148,6 @@ export function useGameEngine() {
     canvas.width = canvasConfig.width;
     canvas.height = canvasConfig.height;
 
-    console.log("Canvas assigned, starting animation");
     animate({ canvas });
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
