@@ -47,14 +47,8 @@ const animate = ({
     })
   );
 
-  canvasContext.fillStyle = "black";
-  canvasContext.fillRect(0, 0, canvas.width, canvas.height);
-
   background.update(canvasContext);
   shop.update(canvasContext);
-
-  canvasContext.fillStyle = "rgba(255, 255, 255, 0.15)";
-  canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 
   player.update(canvasContext);
   enemy.update(canvasContext);

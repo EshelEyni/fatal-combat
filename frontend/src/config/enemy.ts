@@ -8,7 +8,7 @@ import kenjiDeath from "../assets/img/kenji/Death.png";
 
 export const enemyConfig = {
   position: {
-    x: 400,
+    x: 950,
     y: 100,
   },
   velocity: {
