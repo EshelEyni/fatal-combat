@@ -2,12 +2,12 @@ from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 from jose import jwt
 
-SECRET_KEY = "SUPER_SECRET_KEY_CHANGE_ME"
+SECRET_KEY = "3124555"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt_sha256"], deprecated="auto")
 
 
 def hash_password(password: str):

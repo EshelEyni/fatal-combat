@@ -13,7 +13,7 @@ app.add_middleware(
 )
 
 init_db()
-# app.include_router(auth_router)
+app.include_router(auth_router)
 
 
 @app.get("/api/")
