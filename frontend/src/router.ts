@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomePage from "./pages/HomePage.vue";
-import GamePage from "./pages/GamePage/GamePage.vue";
+import HomePage from "./pages/HomePage/HomePage.vue";
 
 const routes = [
   { path: "/", component: HomePage },
-  { path: "/game", component: GamePage },
+  { path: "/game", component: () => import("./pages/GamePage/GamePage.vue") },
+  { path: "/login", component: () => import("./pages/LoginPage/LoginPage.vue") },
 ];
 
 const router = createRouter({

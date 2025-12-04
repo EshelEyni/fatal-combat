@@ -21,5 +21,6 @@ defineExpose({ canvasRef });
 }
 canvas {
   border: 1px solid black;
+  border-radius: 8px;
 }
 </style>
