@@ -12,7 +12,7 @@ class UserParams(BaseModel):
     password: str
 
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 
 @router.post("/signup")

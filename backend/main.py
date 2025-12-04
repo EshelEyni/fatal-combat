@@ -8,12 +8,12 @@ init_db()
 app.include_router(auth_router)
 
 
-@app.get("/")
+@app.get("/api/")
 def root():
     return {"message": "Server OK"}
 
 
-@app.websocket("/ws/game")
+@app.websocket("/api/ws/game")
 async def game_socket(websocket: WebSocket):
     await websocket.accept()
     while True:
