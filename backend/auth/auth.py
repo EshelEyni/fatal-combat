@@ -1,15 +1,22 @@
 # auth.py
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session, select
-
-from models import User
-from deps import get_session
 from pydantic import BaseModel
-from password_utils import hash_password, verify_password
-
-from auth_utils import create_access_token
 from passlib.context import CryptContext
-from auth_deps import get_current_user
+from jose import jwt, JWTError
+
+from models.user import User
+from database.database import get_session
+from auth.auth_utils import (
+    create_access_token,
+    SECRET_KEY,
+    ALGORITHM,
+    hash_password,
+    verify_password,
+)
+
+# from  auth.auth_deps import get_current_user
 
 
 class UserParams(BaseModel):
@@ -17,6 +24,7 @@ class UserParams(BaseModel):
     password: str
 
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 
@@ -61,5 +69,20 @@ def login(data: UserParams, session: Session = Depends(get_session)):
 
 
 @router.get("/login-with-token")
-def get_me(current_user=Depends(get_current_user)):
-    return {"username": current_user.username}
+def get_current_user(
+    token: str = Depends(oauth2_scheme), session: Session = Depends(get_session)
+):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("sub")
+
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    user = session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    return user
