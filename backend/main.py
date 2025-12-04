@@ -1,8 +1,16 @@
 from fastapi import FastAPI, WebSocket
 from database import init_db
 from auth import router as auth_router
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],  # allow all methods
+    allow_headers=["*"],  # allow all headers
+)
 
 init_db()
 app.include_router(auth_router)
