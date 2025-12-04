@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 __pycache__
+fatal_combatt.db
 
 # Editor directories and files
 .vscode/*
