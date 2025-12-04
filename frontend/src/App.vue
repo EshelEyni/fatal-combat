@@ -2,7 +2,12 @@
   <h1 class="text-6xl font-bold mb-6 italic title">Fatal Combat</h1>
 
   <router-view />
+  <VueQueryDevtools />
 </template>
+
+<script setup>
+import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
+</script>
 
 <style>
 .title {
