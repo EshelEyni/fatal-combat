@@ -11,6 +11,8 @@
   "dependencies": {
     "@primeuix/themes": "^2.0.1",
     "@tanstack/vue-query": "^5.92.0",
+    "@tanstack/vue-query-devtools": "^6.1.2",
+    "axios": "^1.13.2",
     "chart.js": "^4.5.1",
     "pinia": "^3.0.4",
     "primeflex": "^4.0.0",
