@@ -63,21 +63,3 @@ const onKeyDown = (e: KeyboardEvent) => {
 onMounted(() => window.addEventListener("keydown", onKeyDown));
 onBeforeUnmount(() => window.removeEventListener("keydown", onKeyDown));
 </script>
-
-<style scoped>
-.menu-btn {
-  color: #f3cf60;
-  background: transparent !important;
-  border: none !important;
-  transition: all 0.5s ease;
-  text-shadow: 0 0 12px rgba(232, 59, 6, 0.6), 0 0 22px rgba(243, 207, 96, 0.6);
-}
-
-.active {
-  color: #e83b06 !important;
-}
-
-.menu-btn:hover {
-  color: #e83b06 !important;
-}
-</style>
