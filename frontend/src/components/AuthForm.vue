@@ -1,30 +1,28 @@
 <template>
-  <div class="flex flex-column align-items-center">
-    <div class="flex flex-column align-items-center gap-3">
-      <input
-        v-for="(field, i) in formFields"
-        :key="field.key"
-        v-model="field.model.value"
-        :type="field.type"
-        :placeholder="field.placeholder"
-        class="menu-input"
-        :class="{ active: activeKey === field.key }"
-        :ref="setItemRef(i)"
-        tabindex="0"
-        :autofocus="i === 0"
-      />
+  <div class="flex flex-column align-items-center gap-3">
+    <input
+      v-for="(field, i) in formFields"
+      :key="field.key"
+      v-model="field.model.value"
+      :type="field.type"
+      :placeholder="field.placeholder"
+      class="menu-input"
+      :class="{ active: activeKey === field.key }"
+      :ref="setItemRef(i)"
+      tabindex="0"
+      :autofocus="i === 0"
+    />
 
-      <Button
-        v-for="(btn, i) in buttons"
-        :key="btn.key"
-        :label="btn.label"
-        class="text-3xl uppercase menu-btn"
-        :class="{ active: activeKey === btn.key }"
-        @click="btn.action"
-        :ref="setItemRef(formFields.length + i)"
-        tabindex="0"
-      />
-    </div>
+    <Button
+      v-for="(btn, i) in buttons"
+      :key="btn.key"
+      :label="btn.label"
+      class="text-3xl uppercase menu-btn"
+      :class="{ active: activeKey === btn.key }"
+      @click="btn.action"
+      :ref="setItemRef(formFields.length + i)"
+      tabindex="0"
+    />
   </div>
 </template>
 

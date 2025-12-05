@@ -1,17 +1,16 @@
 <template>
-  <div class="flex flex-column align-items-center" v-if="!isLoadingLoggedInUser">
-    <div class="flex flex-column align-items-center gap-3">
-      <Button
-        v-for="(btn, i) in buttons"
-        :key="btn.key"
-        :label="btn.label"
-        class="text-3xl uppercase menu-btn"
-        :class="{ active: activeKey === btn.key }"
-        @click="btn.action"
-        :ref="setItemRef(i)"
-        tabindex="0"
-      />
-    </div>
+  <div v-if="isLoadingLoggedInUser">Loading...</div>
+  <div class="flex flex-column align-items-center gap-3" v-else>
+    <Button
+      v-for="(btn, i) in buttons"
+      :key="btn.key"
+      :label="btn.label"
+      class="text-3xl uppercase menu-btn"
+      :class="{ active: activeKey === btn.key }"
+      @click="btn.action"
+      :ref="setItemRef(i)"
+      tabindex="0"
+    />
   </div>
 </template>
 
