@@ -28,7 +28,8 @@ export function useGameEngine(gameMode: GameMode) {
    const player_1 = reactive(new Fighter(playerConfig));
    const player_2 = reactive(new Fighter(enemyConfig));
 
-   const aiDecisionEngine = createAIDecisionEngine(player_1, player_2);
+   let frame = 0;
+   const { update } = createAIDecisionEngine(player_1, player_2);
 
    const animate = ({ canvas }: { canvas: HTMLCanvasElement }) => {
       const canvasContext = canvas.getContext("2d")!;
@@ -63,8 +64,8 @@ export function useGameEngine(gameMode: GameMode) {
             },
          });
       } else if (gameMode === GameMode.SINGLE_PLAYER) {
-         aiDecisionEngine.frame++;
-         aiDecisionEngine.update(aiDecisionEngine.frame, keysState);
+         frame++;
+         update(frame);
       }
 
       // attacks
