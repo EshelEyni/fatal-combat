@@ -31,26 +31,25 @@ const isLoggedIn = computed(() => !!loggedInUser.value);
 const { activeKey, setItemRef } = useKeyboardMenu(() => buttons.value);
 
 const buttons = computed(() => {
-  const arr = [{ key: "play", label: "Play", action: onPlay }];
+  const authButtons = isLoggedIn.value
+    ? [{ key: "logout", label: "Logout", action: onLogout }]
+    : [
+        { key: "signup", label: "Signup", action: () => onNavigate("/signup") },
+        { key: "login", label: "Login", action: () => onNavigate("/login") },
+      ];
 
-  if (isLoggedIn.value) {
-    arr.push({ key: "logout", label: "Logout", action: onLogout });
-  } else {
-    arr.push({ key: "login", label: "Login", action: onLogin });
-  }
-
-  return arr;
+  return [
+    { key: "play", label: "Play", action: () => onNavigate("/game") },
+    ...authButtons,
+    { key: "about", label: "About", action: () => onNavigate("/about") },
+  ];
 });
 
-const onLogin = () => {
-  router.push("/login");
+const onNavigate = (path: string) => {
+  router.push(path);
 };
 
 const onLogout = () => {
   logout();
-};
-
-const onPlay = () => {
-  router.push("/game");
 };
 </script>
