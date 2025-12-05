@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/vue-query";
-import { loginWithToken } from "../services/loginApiService";
+import { loginWithToken } from "../services/authApiService";
 
-export function useAuth() {
+export function useLoginWithToken() {
   const {
     data: loggedInUser,
     error: errorLoggedInUser,

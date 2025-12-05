@@ -40,7 +40,7 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { useMutation } from "@tanstack/vue-query";
 import Button from "primevue/button";
-import { login } from "../../services/loginApiService";
+import { login } from "../../services/authApiService";
 
 const router = useRouter();
 

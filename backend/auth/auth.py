@@ -111,3 +111,10 @@ def get_current_user(
         raise HTTPException(401, "User not found")
 
     return {"id": user.id, "username": user.username}
+
+
+@router.post("/logout")
+def logout(response: Response):
+    response.delete_cookie(key="token", path="/")
+
+    return {"status": "success", "data": {"msg": "Logged out successfully"}}
