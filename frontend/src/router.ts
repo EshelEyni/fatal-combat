@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage/HomePage.vue";
 const routes = [
   { path: "/", component: HomePage },
   { path: "/game", component: () => import("./pages/GamePage/GamePage.vue") },
+  { path: "/game-mode", component: () => import("./pages/GameModePage/GameModePage.vue") },
   { path: "/login", component: () => import("./pages/LoginPage/LoginPage.vue") },
   { path: "/signup", component: () => import("./pages/SignupPage/SignupPage.vue") },
   { path: "/about", component: () => import("./pages/AboutPage/AboutPage.vue") },

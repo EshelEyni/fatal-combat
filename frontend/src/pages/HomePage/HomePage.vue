@@ -38,7 +38,7 @@ const buttons = computed(() => {
       ];
 
   return [
-    { key: "play", label: "Play", action: () => onNavigate("/game") },
+    { key: "play", label: "Play", action: () => onNavigate("/game-mode") },
     ...authButtons,
     { key: "about", label: "About", action: () => onNavigate("/about") },
   ];

@@ -16,6 +16,7 @@
 import { ref, computed } from "vue";
 import { useLoginWithToken } from "../../composables/auth/useLoginWithToken";
 import { useKeyboardMenu } from "../../composables/useKeyboardMenu";
+import Button from "primevue/button";
 const { loggedInUser } = useLoginWithToken();
 
 const playerMode = ref(null as null | "multiplayer" | "singlePlayer");
