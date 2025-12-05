@@ -6,8 +6,9 @@
 import { onMounted, ref } from "vue";
 import GameScreen from "../../components/GameScreen/GameScreen .vue";
 import { useGameEngine } from "../../composables/gameEngine/useGameEngine/useGameEngine";
+import { GameMode } from "../../composables/gameEngine/useGameEngine/types/GameMode";
 
-const { canvasEl, player_1, player_2 } = useGameEngine();
+const { canvasEl, player_1, player_2 } = useGameEngine(GameMode.SINGLE_PLAYER);
 
 const gameCanvasComponent = ref<InstanceType<typeof GameScreen> | null>(null);
 

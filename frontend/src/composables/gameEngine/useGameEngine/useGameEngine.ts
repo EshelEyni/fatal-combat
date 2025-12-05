@@ -8,10 +8,42 @@ import { enemyConfig } from "../../../config/enemy";
 import { canvasConfig } from "../../../config/canvas";
 import type { KeyState } from "./types/KeyState";
 import { animateLocalMultiplayer } from "./utils/animateLocalMultiplayer";
+import { GameMode } from "./types/GameMode";
+import { animateSinglePlayer } from "./utils/animateSinglePlayer";
 
-export function useGameEngine() {
+export function useGameEngine(gameMode: GameMode) {
    const canvasEl = ref<HTMLCanvasElement | null>(null);
    let animationId = 0;
+
+   const animate = ({ canvas }: { canvas: HTMLCanvasElement }) => {
+      switch (gameMode) {
+         case GameMode.LOCAL_MULTIPLAYER:
+            animateLocalMultiplayer({
+               canvas,
+               keysState,
+               background,
+               shop,
+               player_1,
+               player_2,
+               animationId,
+            });
+            break;
+         case GameMode.SINGLE_PLAYER:
+            animateSinglePlayer({
+               canvas,
+               keysState,
+               background,
+               shop,
+               player_1,
+               player_2,
+               animationId,
+            });
+            break;
+         case GameMode.ONLINE_MULTIPLAYER:
+            console.log("GameMode.ONLINE_MULTIPLAYER");
+            break;
+      }
+   };
 
    const keysState: KeyState = reactive({
       a: { pressed: false },
@@ -98,15 +130,7 @@ export function useGameEngine() {
       canvas.width = canvasConfig.width;
       canvas.height = canvasConfig.height;
 
-      animateLocalMultiplayer({
-         canvas,
-         keysState,
-         background,
-         shop,
-         player_1,
-         player_2,
-         animationId,
-      });
+      animate({ canvas });
       window.addEventListener("keydown", onKeyDown);
       window.addEventListener("keyup", onKeyUp);
    });

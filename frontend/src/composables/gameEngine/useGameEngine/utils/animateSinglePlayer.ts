@@ -3,10 +3,10 @@ import type { AnimateConfig } from "../types/AnimateConfig";
 import { handleAttackCollision } from "./attack";
 import { handlePlayerMovement } from "./movement";
 
-const animate = (config: AnimateConfig) => {
+export const animateSinglePlayer = (config: AnimateConfig) => {
    const canvasContext = config.canvas.getContext("2d")!;
 
-   config.animationId = requestAnimationFrame(() => animate(config));
+   config.animationId = requestAnimationFrame(() => animateSinglePlayer(config));
 
    const { keysState, background, shop, player_1, player_2 } = config;
    background.update(canvasContext);
