@@ -17,62 +17,57 @@ import { ref, computed } from "vue";
 import { useLoginWithToken } from "../../composables/auth/useLoginWithToken";
 import { useKeyboardMenu } from "../../composables/useKeyboardMenu";
 import Button from "primevue/button";
+import { useRouter } from "vue-router";
 const { loggedInUser } = useLoginWithToken();
+const router = useRouter();
 
-const playerMode = ref(null as null | "multiplayer" | "singlePlayer");
-const multiPlayerMode = ref(null as null | "local" | "online");
+const isMultiplayer = ref(false);
 
-const isGameReady = ref(false);
-
-const onSetGameMode = (mode: "multiplayer" | "singlePlayer") => {
-  playerMode.value = mode;
-};
-
-const onSetMultiPlayerMode = (mode: "local" | "online") => {
-  multiPlayerMode.value = mode;
-  isGameReady.value = true;
-};
 const buttons = computed(() => {
-  if (playerMode.value === "multiplayer") {
-    if (loggedInUser.value) {
-      return [
-        {
-          key: "local",
-          label: "local",
-          action: () => onSetMultiPlayerMode("local"),
-        },
-        {
-          key: "online",
-          label: "online",
-          action: () => onSetMultiPlayerMode("online"),
-        },
-      ];
-    }
+  const goBackBtn = {
+    key: "goback",
+    label: "Go Back",
+    action: () => {
+      if (isMultiplayer.value) {
+        isMultiplayer.value = false;
+      } else {
+        router.push("/");
+      }
+    },
+  };
 
-    return [
-      {
-        key: "local",
-        label: "local",
-        action: () => onSetMultiPlayerMode("local"),
-      },
-    ];
-  }
-
-  return [
+  const mainButtons = [
     {
       key: "multiplayer",
       label: "Multiplayer",
-      action: () => onSetGameMode("multiplayer"),
+      action: () => {
+        if (!loggedInUser.value) return router.push("/game");
+        isMultiplayer.value = true;
+      },
     },
     {
       key: "singlePlayer",
       label: "Singleplayer",
-      action: () => {
-        onSetGameMode("singlePlayer");
-        isGameReady.value = true;
-      },
+      action: () => router.push("/game"),
     },
+    goBackBtn,
   ];
+
+  const multiplayerButtons = [
+    {
+      key: "online",
+      label: "Online",
+      action: () => router.push("/game"),
+    },
+    {
+      key: "local",
+      label: "Local",
+      action: () => router.push("/game"),
+    },
+    goBackBtn,
+  ];
+
+  return isMultiplayer.value ? multiplayerButtons : mainButtons;
 });
 
 const { activeKey, setItemRef } = useKeyboardMenu(() => buttons.value);
