@@ -7,43 +7,14 @@ import { playerConfig } from "../../../config/player";
 import { enemyConfig } from "../../../config/enemy";
 import { canvasConfig } from "../../../config/canvas";
 import type { KeyState } from "./types/KeyState";
-import { animateLocalMultiplayer } from "./utils/animateLocalMultiplayer";
 import { GameMode } from "./types/GameMode";
-import { animateSinglePlayer } from "./utils/animateSinglePlayer";
+import { handleAttackCollision } from "./utils/attack";
+import { handlePlayerMovement } from "./utils/movement";
+import { createAIDecisionEngine } from "./utils/createAIDecisionEngine";
 
 export function useGameEngine(gameMode: GameMode) {
    const canvasEl = ref<HTMLCanvasElement | null>(null);
    let animationId = 0;
-
-   const animate = ({ canvas }: { canvas: HTMLCanvasElement }) => {
-      switch (gameMode) {
-         case GameMode.LOCAL_MULTIPLAYER:
-            animateLocalMultiplayer({
-               canvas,
-               keysState,
-               background,
-               shop,
-               player_1,
-               player_2,
-               animationId,
-            });
-            break;
-         case GameMode.SINGLE_PLAYER:
-            animateSinglePlayer({
-               canvas,
-               keysState,
-               background,
-               shop,
-               player_1,
-               player_2,
-               animationId,
-            });
-            break;
-         case GameMode.ONLINE_MULTIPLAYER:
-            console.log("GameMode.ONLINE_MULTIPLAYER");
-            break;
-      }
-   };
 
    const keysState: KeyState = reactive({
       a: { pressed: false },
@@ -56,6 +27,59 @@ export function useGameEngine(gameMode: GameMode) {
    const shop = new Sprite(shopCofnig);
    const player_1 = reactive(new Fighter(playerConfig));
    const player_2 = reactive(new Fighter(enemyConfig));
+
+   const aiDecisionEngine = createAIDecisionEngine(player_1, player_2);
+
+   const animate = ({ canvas }: { canvas: HTMLCanvasElement }) => {
+      const canvasContext = canvas.getContext("2d")!;
+
+      animationId = requestAnimationFrame(() => animate({ canvas }));
+
+      background.update(canvasContext);
+      shop.update(canvasContext);
+      player_1.update(canvasContext);
+      player_2.update(canvasContext);
+
+      handlePlayerMovement(player_1, {
+         left: {
+            pressed: keysState.a.pressed,
+            keyCode: "KeyA",
+         },
+         right: {
+            pressed: keysState.d.pressed,
+            keyCode: "KeyD",
+         },
+      });
+
+      if (gameMode === GameMode.LOCAL_MULTIPLAYER) {
+         handlePlayerMovement(player_2, {
+            left: {
+               pressed: keysState.ArrowLeft.pressed,
+               keyCode: "ArrowLeft",
+            },
+            right: {
+               pressed: keysState.ArrowRight.pressed,
+               keyCode: "ArrowRight",
+            },
+         });
+      } else if (gameMode === GameMode.SINGLE_PLAYER) {
+         aiDecisionEngine.frame++;
+         aiDecisionEngine.update(aiDecisionEngine.frame, keysState);
+      }
+
+      // attacks
+      handleAttackCollision({
+         attacker: player_1,
+         defender: player_2,
+         hitFrame: 4,
+      });
+
+      handleAttackCollision({
+         attacker: player_2,
+         defender: player_1,
+         hitFrame: 2,
+      });
+   };
 
    const onKeyDown = (event: KeyboardEvent) => {
       if (!player_1.dead) {
