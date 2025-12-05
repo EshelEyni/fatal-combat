@@ -58,7 +58,7 @@ def register(
         max_age=60 * 60,
         path="/",
     )
-    return {"message": "User created", "user_id": user.id}
+    return {"message": "User created", "data": user}
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -88,7 +88,7 @@ def login(
         path="/",
     )
 
-    return {"message": "Logged in"}
+    return {"message": "Logged in", "data": user}
 
 
 @router.get("/login-with-token")
@@ -110,7 +110,7 @@ def get_current_user(
     if not user:
         raise HTTPException(401, "User not found")
 
-    return {"id": user.id, "username": user.username}
+    return {"data": user}
 
 
 @router.post("/logout")
