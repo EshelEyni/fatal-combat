@@ -2,6 +2,7 @@
   "name": "backend",
   "private": true,
   "scripts": {
-    "dev": "uvicorn main:app --reload --port 8000"
+    "dev": "uvicorn main:app --reload --port 8000",
+    "clean": "powershell -ExecutionPolicy Bypass -File ./cleanCache.ps1"
   }
 }
