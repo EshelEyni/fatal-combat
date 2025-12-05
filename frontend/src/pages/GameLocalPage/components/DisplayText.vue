@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { type Winner } from "../utils/timer";
+import { type Winner } from "./Timer/createTimer";
 defineProps<{
   winner: Winner;
 }>();

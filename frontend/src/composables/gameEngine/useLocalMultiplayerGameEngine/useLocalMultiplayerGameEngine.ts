@@ -1,11 +1,11 @@
-import { onBeforeUnmount, ref, watch } from "vue";
-import { Sprite } from "../../classes/Sprite";
-import { canvasBackgroundConfig } from "../../config/canvasBackground";
-import { shopCofnig } from "../../config/shop";
-import { Fighter } from "../../classes/Fighter";
-import { playerConfig } from "../../config/player";
-import { enemyConfig } from "../../config/enemy";
-import { canvasConfig } from "../../config/canvas";
+import { onBeforeUnmount, reactive, ref, watch } from "vue";
+import { Sprite } from "../../../classes/Sprite";
+import { canvasBackgroundConfig } from "../../../config/canvasBackground";
+import { shopCofnig } from "../../../config/shop";
+import { Fighter } from "../../../classes/Fighter";
+import { playerConfig } from "../../../config/player";
+import { enemyConfig } from "../../../config/enemy";
+import { canvasConfig } from "../../../config/canvas";
 import { handlePlayerMovement } from "./utils/movement";
 import { handleAttackCollision } from "./utils/attack";
 
@@ -22,8 +22,8 @@ export function useGameEngine() {
 
   const background = new Sprite(canvasBackgroundConfig);
   const shop = new Sprite(shopCofnig);
-  const player_1 = new Fighter(playerConfig);
-  const player_2 = new Fighter(enemyConfig);
+  const player_1 = reactive(new Fighter(playerConfig));
+  const player_2 = reactive(new Fighter(enemyConfig));
 
   const animate = ({ canvas }: { canvas: HTMLCanvasElement }) => {
     const canvasContext = canvas.getContext("2d")!;

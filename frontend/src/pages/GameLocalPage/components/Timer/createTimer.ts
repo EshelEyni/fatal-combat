@@ -1,11 +1,3 @@
-// src/game/pureUtils.ts
-export type Winner = "player_1" | "player_2" | "tie";
-
-export function pickWinner(playerHealth: number, enemyHealth: number): Winner {
-  if (playerHealth === enemyHealth) return "tie";
-  return playerHealth > enemyHealth ? "player_1" : "player_2";
-}
-
 export function createTimer({
   seconds,
   onTick,
