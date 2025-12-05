@@ -39,6 +39,7 @@ export function useKeyboardMenu<T extends { key: string; action?: () => void }>(
     }
 
     if (e.key === "Enter") {
+      e.preventDefault();
       trigger();
     }
   };
