@@ -115,6 +115,6 @@ def get_current_user(
 
 @router.post("/logout")
 def logout(response: Response):
-    response.delete_cookie(key="token", path="/")
+    response.delete_cookie(key="fatalCombatJWT", path="/")
 
     return {"status": "success", "data": {"msg": "Logged out successfully"}}
