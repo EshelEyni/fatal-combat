@@ -148,7 +148,7 @@ export class Fighter extends Sprite {
   }
 
   takeHit() {
-    this.health -= 5;
+    this.health -= 7.5;
     if (this.health <= 0) {
       this.switchSprite("death");
     } else {
