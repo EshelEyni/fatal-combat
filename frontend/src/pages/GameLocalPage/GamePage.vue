@@ -21,7 +21,7 @@ const gameCanvasComponent = ref<InstanceType<typeof GameCanvas> | null>(null);
 
 const { canvasEl, player_1, player_2 } = useGameEngine();
 
-const timer = ref(60);
+const timer = ref(90);
 const winner = ref<Winner | null>(null);
 
 const timerCtl = createTimer({
