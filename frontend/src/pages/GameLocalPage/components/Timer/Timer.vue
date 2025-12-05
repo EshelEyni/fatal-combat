@@ -7,23 +7,21 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import { createTimer } from "./createTimer";
 
 const props = defineProps<{
-  seconds: number;
   player1Health: number;
   player2Health: number;
 }>();
 
 const emit = defineEmits<{
-  (e: "tick", time: number): void;
   (e: "done", winner: string | null): void;
 }>();
 
-const time = ref(props.seconds);
+const defaultSeconds = 90;
+const time = ref(defaultSeconds);
 
 const timerCtl = createTimer({
-  seconds: props.seconds,
+  seconds: defaultSeconds,
   onTick: (s) => {
     time.value = s;
-    emit("tick", s);
   },
   onDone: () => {
     const winner =
