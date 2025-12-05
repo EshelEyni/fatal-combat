@@ -20,7 +20,13 @@ import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
   background: transparent !important;
   border: none !important;
   transition: all 0.5s ease;
-  text-shadow: 0 0 12px rgba(232, 59, 6, 0.6), 0 0 22px rgba(243, 207, 96, 0.6);
+  text-shadow: 0 0 2px rgba(232, 59, 6, 0.6), 0 0 8px rgba(243, 207, 96, 0.6);
+}
+
+.menu-btn:focus-visible {
+  transform: scale(0.95);
+  outline: none !important;
+  border: none !important;
 }
 
 .active {

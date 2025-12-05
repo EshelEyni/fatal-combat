@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-column align-items-center">
-    <h3 class="text-4xl font-bold mt-0 mb-3 title">Login</h3>
     <div class="flex flex-column align-items-center gap-3">
       <input
         v-for="(field, i) in formFields"
@@ -73,7 +72,7 @@ const formFields = [
 ];
 
 const buttons = [
-  { key: "submit", label: "Submit", action: onSubmit },
+  { key: "submit", label: "Login", action: onSubmit },
   { key: "back", label: "Back", action: goBack },
 ];
 
