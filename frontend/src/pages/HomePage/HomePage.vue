@@ -2,30 +2,38 @@
   <div class="flex flex-column align-items-center">
     <div class="flex flex-column align-items-center gap-3">
       <Button
-        label="Play"
+        v-for="btn in buttons"
+        :key="btn.key"
+        :label="btn.label"
         class="text-3xl uppercase menu-btn"
-        :class="{ active: activeBtn === 'play' }"
-        @click="onPlay"
-      />
-
-      <Button
-        :label="isLoggedIn ? 'Logout' : 'Login'"
-        class="text-3xl uppercase menu-btn"
-        :class="{ active: activeBtn === 'login' }"
-        @click="isLoggedIn ? onLogout() : onLogin()"
+        :class="{ active: activeBtn === btn.key }"
+        @click="btn.action"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import Button from "primevue/button";
 import { useRouter } from "vue-router";
-const router = useRouter();
+import { useAuth } from "../../composables/useAuth";
 
-const activeBtn = ref<"play" | "login">("play");
-const isLoggedIn = ref(false);
+const router = useRouter();
+const { loggedInUser } = useAuth();
+const isLoggedIn = computed(() => !!loggedInUser.value);
+
+const buttons = computed(() => {
+  const arr = [{ key: "play", label: "Play", action: onPlay }];
+
+  if (isLoggedIn.value) {
+    arr.push({ key: "logout", label: "Logout", action: onLogout });
+  } else {
+    arr.push({ key: "login", label: "Login", action: onLogin });
+  }
+
+  return arr;
+});
 
 const onLogin = () => {
   router.push("/login");
@@ -39,10 +47,12 @@ const onPlay = () => {
   router.push("/game");
 };
 
+const activeBtn = ref<"play" | "login">("play");
+
 const triggerActive = () => {
   if (activeBtn.value === "play") onPlay();
   else if (activeBtn.value === "login") {
-    isLoggedIn.value ? onLogout() : onLogin();
+    !!loggedInUser.value ? onLogout() : onLogin();
   }
 };
 

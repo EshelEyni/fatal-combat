@@ -30,8 +30,6 @@ async function ajax(
   data: object | null = null
 ) {
   try {
-    console.log(data);
-    
     const res = await axios({
       url: `${BASE_URL}${endpoint}`,
       method,
