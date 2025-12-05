@@ -1,5 +1,5 @@
 # auth.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response, Cookie
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session, select
 from pydantic import BaseModel
@@ -16,8 +16,6 @@ from auth.auth_utils import (
     verify_password,
 )
 
-# from  auth.auth_deps import get_current_user
-
 
 class UserParams(BaseModel):
     username: str
@@ -29,7 +27,9 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 
 @router.post("/signup")
-def register(data: UserParams, session: Session = Depends(get_session)):
+def register(
+    data: UserParams, response: Response, session: Session = Depends(get_session)
+):
     if len(data.password) < 4:
         raise HTTPException(
             status_code=400, detail="Password must be at least 4 characters long"
@@ -47,6 +47,17 @@ def register(data: UserParams, session: Session = Depends(get_session)):
     session.commit()
     session.refresh(user)
 
+    token = create_access_token({"sub": str(user.id)})
+
+    response.set_cookie(
+        key="fatalCombatJWT",
+        value=token,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        max_age=60 * 60,
+        path="/",
+    )
     return {"message": "User created", "user_id": user.id}
 
 
@@ -54,7 +65,9 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @router.post("/login")
-def login(data: UserParams, session: Session = Depends(get_session)):
+def login(
+    data: UserParams, response: Response, session: Session = Depends(get_session)
+):
     user = session.exec(select(User).where(User.username == data.username)).first()
 
     if not user:
@@ -65,24 +78,36 @@ def login(data: UserParams, session: Session = Depends(get_session)):
 
     token = create_access_token({"sub": str(user.id)})
 
-    return {"message": "Logged in", "access_token": token, "token_type": "bearer"}
+    response.set_cookie(
+        key="fatalCombatJWT",
+        value=token,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        max_age=60 * 60,
+        path="/",
+    )
+
+    return {"message": "Logged in"}
 
 
 @router.get("/login-with-token")
 def get_current_user(
-    token: str = Depends(oauth2_scheme), session: Session = Depends(get_session)
+    fatalCombatJWT: str = Cookie(None), session: Session = Depends(get_session)
 ):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: str = payload.get("sub")
+    if fatalCombatJWT is None:
+        raise HTTPException(401, "Missing auth cookie")
 
+    try:
+        payload = jwt.decode(fatalCombatJWT, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")
         if user_id is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
+            raise HTTPException(401, "Invalid token")
     except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        raise HTTPException(401, "Invalid token")
 
     user = session.get(User, user_id)
     if not user:
-        raise HTTPException(status_code=401, detail="User not found")
+        raise HTTPException(401, "User not found")
 
-    return user
+    return {"id": user.id, "username": user.username}
