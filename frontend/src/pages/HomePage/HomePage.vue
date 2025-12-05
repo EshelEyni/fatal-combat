@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-column align-items-center">
+  <div class="flex flex-column align-items-center" v-if="!isLoadingLoggedInUser">
     <div class="flex flex-column align-items-center gap-3">
       <Button
         v-for="(btn, i) in buttons"
@@ -24,7 +24,7 @@ import { useKeyboardMenu } from "../../composables/useKeyboardMenu";
 import { useLogout } from "../../composables/auth/useLogout";
 
 const router = useRouter();
-const { loggedInUser } = useLoginWithToken();
+const { loggedInUser, isLoadingLoggedInUser } = useLoginWithToken();
 const { logout } = useLogout();
 const isLoggedIn = computed(() => !!loggedInUser.value);
 
