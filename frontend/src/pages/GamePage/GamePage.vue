@@ -35,7 +35,6 @@ const timerCtl = createTimer({
 });
 
 onMounted(() => {
-  // Access the exposed canvasRef from the child component
   if (gameCanvasComponent.value) {
     canvasEl.value = gameCanvasComponent.value.canvasRef;
     timerCtl.start();
