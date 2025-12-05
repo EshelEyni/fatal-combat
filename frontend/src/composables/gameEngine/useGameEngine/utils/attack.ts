@@ -15,7 +15,7 @@ export const handleAttackCollision = ({
   defender: Fighter;
   hitFrame: number;
 }) => {
-  const hit = didAttackHit({
+  const hit = isHitDetected({
     rectangle1: attacker.attackBox,
     rectangle2: {
       position: defender.position,
@@ -35,7 +35,7 @@ export const handleAttackCollision = ({
   }
 };
 
-function didAttackHit({
+export function isHitDetected({
   rectangle1,
   rectangle2,
 }: {
