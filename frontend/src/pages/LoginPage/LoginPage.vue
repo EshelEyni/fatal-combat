@@ -38,11 +38,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
-import { useMutation } from "@tanstack/vue-query";
 import Button from "primevue/button";
-import { login } from "../../services/authApiService";
+import { useLogin } from "../../composables/auth/useLogin";
 
 const router = useRouter();
+const { login } = useLogin();
 
 const username = ref("");
 const password = ref("");
@@ -50,23 +50,15 @@ const password = ref("");
 type Field = "username" | "password" | "submit" | "back";
 const activeField = ref<Field>("username");
 
-const loginMutation = useMutation({
-  mutationFn: login,
-  onSuccess: (data) => {
-    console.log("Login success:", data);
-    router.push("/game");
-  },
-  onError: (e: Error) => {
-    alert("Wrong username or password!");
-    console.log(e.message);
-  },
-});
-
 const onSubmit = () => {
-  loginMutation.mutate({
-    username: username.value,
-    password: password.value,
-  });
+  login(
+    { username: username.value, password: password.value },
+    {
+      onSuccess: () => {
+        router.push("/");
+      },
+    }
+  );
 };
 
 const goBack = () => {

@@ -17,13 +17,13 @@
 import { computed } from "vue";
 import Button from "primevue/button";
 import { useRouter } from "vue-router";
-import { useLoginWithToken } from "../../composables/useLoginWithToken";
+import { useLoginWithToken } from "../../composables/auth/useLoginWithToken";
 import { useKeyboardMenu } from "../../composables/useKeyboardMenu";
-import { useLogout } from "../../composables/useLogout";
+import { useLogout } from "../../composables/auth/useLogout";
 
 const router = useRouter();
 const { loggedInUser } = useLoginWithToken();
-const { onLogout } = useLogout();
+const { logout } = useLogout();
 const isLoggedIn = computed(() => !!loggedInUser.value);
 
 const { activeKey } = useKeyboardMenu(() => buttons.value);
@@ -42,6 +42,10 @@ const buttons = computed(() => {
 
 const onLogin = () => {
   router.push("/login");
+};
+
+const onLogout = () => {
+  logout();
 };
 
 const onPlay = () => {

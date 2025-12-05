@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/vue-query";
-import { loginWithToken } from "../services/authApiService";
+import { authApiService } from "../../services/authApiService";
 
 export function useLoginWithToken() {
   const {
@@ -11,7 +11,7 @@ export function useLoginWithToken() {
     isFetched: isFetchedLoggedInUser,
   } = useQuery({
     queryKey: ["loggedInUser"],
-    queryFn: loginWithToken,
+    queryFn: authApiService.loginWithToken,
     retry: false,
   });
 

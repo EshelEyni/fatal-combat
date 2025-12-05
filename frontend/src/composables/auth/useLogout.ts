@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
-import { logout } from "../services/authApiService";
+import { authApiService } from "../../services/authApiService";
 
 export function useLogout() {
   const queryClient = useQueryClient();
 
-  const { mutate: onLogout, isPending: isPendingLogout } = useMutation({
-    mutationFn: logout,
+  const { mutate: logout, isPending: isPendingLogout } = useMutation({
+    mutationFn: authApiService.logout,
     onSuccess: () => {
       queryClient.setQueryData(["loggedInUser"], null);
     },
   });
 
-  return { onLogout, isPendingLogout };
+  return { logout, isPendingLogout };
 }
