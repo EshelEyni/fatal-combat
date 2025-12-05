@@ -1,16 +1,31 @@
-// src/composables/useKeyboardMenu.ts
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 
-export function useKeyboardMenu<T extends { key: string; action: () => void }>(
+export function useKeyboardMenu<T extends { key: string; action?: () => void }>(
   items: () => T[]
 ) {
   const activeIndex = ref(0);
-
   const activeItem = computed(() => items()[activeIndex.value]);
   const activeKey = computed(() => activeItem.value?.key);
 
+  const itemEls = ref<HTMLElement[]>([]);
+
+  const setItemRef = (index: number) => (el: any) => {
+    const dom: HTMLElement | null =
+      el instanceof HTMLElement
+        ? el
+        : el?.$el instanceof HTMLElement
+        ? el.$el
+        : null;
+
+    if (dom) itemEls.value[index] = dom;
+  };
+
+  watch(activeIndex, () => {
+    itemEls.value[activeIndex.value]?.focus?.();
+  });
+
   const trigger = () => {
-    activeItem.value?.action();
+    activeItem.value?.action?.();
   };
 
   const onKeyDown = (e: KeyboardEvent) => {
@@ -31,5 +46,5 @@ export function useKeyboardMenu<T extends { key: string; action: () => void }>(
   onMounted(() => window.addEventListener("keydown", onKeyDown));
   onBeforeUnmount(() => window.removeEventListener("keydown", onKeyDown));
 
-  return { activeIndex, activeKey, activeItem, trigger };
+  return { activeIndex, activeKey, activeItem, trigger, setItemRef };
 }

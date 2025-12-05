@@ -2,12 +2,14 @@
   <div class="flex flex-column align-items-center">
     <div class="flex flex-column align-items-center gap-3">
       <Button
-        v-for="btn in buttons"
+        v-for="(btn, i) in buttons"
         :key="btn.key"
         :label="btn.label"
         class="text-3xl uppercase menu-btn"
         :class="{ active: activeKey === btn.key }"
         @click="btn.action"
+        :ref="setItemRef(i)"
+        tabindex="0"
       />
     </div>
   </div>
@@ -26,7 +28,7 @@ const { loggedInUser } = useLoginWithToken();
 const { logout } = useLogout();
 const isLoggedIn = computed(() => !!loggedInUser.value);
 
-const { activeKey } = useKeyboardMenu(() => buttons.value);
+const { activeKey, setItemRef } = useKeyboardMenu(() => buttons.value);
 
 const buttons = computed(() => {
   const arr = [{ key: "play", label: "Play", action: onPlay }];
