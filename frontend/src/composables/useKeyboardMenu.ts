@@ -20,9 +20,11 @@ export function useKeyboardMenu<T extends { key: string; action?: () => void }>(
     if (dom) itemEls.value[index] = dom;
   };
 
-  watch(activeIndex, () => {
+  const focusActive = async () => {
     itemEls.value[activeIndex.value]?.focus?.();
-  });
+  };
+
+  watch(activeIndex, focusActive);
 
   const trigger = () => {
     activeItem.value?.action?.();
@@ -44,7 +46,10 @@ export function useKeyboardMenu<T extends { key: string; action?: () => void }>(
     }
   };
 
-  onMounted(() => window.addEventListener("keydown", onKeyDown));
+  onMounted(() => {
+    window.addEventListener("keydown", onKeyDown);
+    focusActive();
+  });
   onBeforeUnmount(() => window.removeEventListener("keydown", onKeyDown));
 
   return { activeIndex, activeKey, activeItem, trigger, setItemRef };

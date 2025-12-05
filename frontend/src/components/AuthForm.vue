@@ -1,7 +1,5 @@
 <template>
   <div class="flex flex-column align-items-center">
-    <h3 class="text-4xl font-bold mt-0 mb-3 title">{{ title }}</h3>
-
     <div class="flex flex-column align-items-center gap-3">
       <input
         v-for="(field, i) in formFields"
