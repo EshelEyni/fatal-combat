@@ -41,14 +41,14 @@ const buttons = computed(() => {
       key: "multiplayer",
       label: "Multiplayer",
       action: () => {
-        if (!loggedInUser.value) return router.push("/game");
+        if (!loggedInUser.value) return router.push("/game-local");
         isMultiplayer.value = true;
       },
     },
     {
       key: "singlePlayer",
       label: "Singleplayer",
-      action: () => router.push("/game"),
+      action: () => router.push("/game-single"),
     },
     goBackBtn,
   ];
@@ -57,12 +57,12 @@ const buttons = computed(() => {
     {
       key: "online",
       label: "Online",
-      action: () => router.push("/game"),
+      action: () => router.push("/game-online"),
     },
     {
       key: "local",
       label: "Local",
-      action: () => router.push("/game"),
+      action: () => router.push("/game-local"),
     },
     goBackBtn,
   ];
