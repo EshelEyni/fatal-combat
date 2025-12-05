@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import GameScreen from "../../components/GameScreen/GameScreen .vue";
-import { useGameEngine } from "../../composables/gameEngine/useLocalMultiplayerGameEngine/useLocalMultiplayerGameEngine";
+import { useGameEngine } from "../../composables/gameEngine/useGameEngine/useGameEngine";
 
 const { canvasEl, player_1, player_2 } = useGameEngine();
 
