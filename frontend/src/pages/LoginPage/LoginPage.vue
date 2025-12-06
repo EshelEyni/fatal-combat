@@ -1,10 +1,10 @@
 <template>
-  <AuthForm
-    title="Signup"
-    submitLabel="Signup"
-    :onSubmit="handleSubmit"
-    :onBack="() => router.push('/')"
-  />
+   <AuthForm
+      title="Signup"
+      submitLabel="Signup"
+      :onSubmit="handleSubmit"
+      :onBack="() => router.push('/')"
+   />
 </template>
 
 <script setup lang="ts">
@@ -16,10 +16,10 @@ const router = useRouter();
 const { login } = useLogin();
 
 const handleSubmit = (cred: { username: string; password: string }) => {
-  login(cred, {
-    onSuccess: () => {
-      router.push("/");
-    },
-  });
+   login(cred, {
+      onSuccess: () => {
+         router.push("/");
+      },
+   });
 };
 </script>

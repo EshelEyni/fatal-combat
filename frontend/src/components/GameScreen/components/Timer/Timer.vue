@@ -1,5 +1,5 @@
 <template>
-  <div class="timer">{{ time }}</div>
+   <div class="timer">{{ time }}</div>
 </template>
 
 <script setup lang="ts">
@@ -7,32 +7,33 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import { createTimer } from "./createTimer";
 
 const props = defineProps<{
-  player1Health: number;
-  player2Health: number;
+   player1Health: number;
+   player2Health: number;
 }>();
+console.log(props);
 
 const emit = defineEmits<{
-  (e: "done", winner: string | null): void;
+   (e: "done", winner: string | null): void;
 }>();
 
 const defaultSeconds = 90;
 const time = ref(defaultSeconds);
 
 const timerCtl = createTimer({
-  seconds: defaultSeconds,
-  onTick: (s) => {
-    time.value = s;
-  },
-  onDone: () => {
-    const winner =
-      props.player1Health === props.player2Health
-        ? "tie"
-        : props.player1Health > props.player2Health
-        ? "player_1"
-        : "player_2";
+   seconds: defaultSeconds,
+   onTick: s => {
+      time.value = s;
+   },
+   onDone: () => {
+      const winner =
+         props.player1Health === props.player2Health
+            ? "tie"
+            : props.player1Health > props.player2Health
+              ? "player_1"
+              : "player_2";
 
-    emit("done", winner);
-  },
+      emit("done", winner);
+   },
 });
 
 onMounted(() => timerCtl.start());
@@ -41,17 +42,17 @@ onBeforeUnmount(() => timerCtl.stop());
 
 <style scoped>
 .timer {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: black;
-  width: 100px;
-  height: 50px;
-  color: white;
-  border: 4px solid white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+   position: absolute;
+   top: 10px;
+   left: 50%;
+   transform: translateX(-50%);
+   background: black;
+   width: 100px;
+   height: 50px;
+   color: white;
+   border: 4px solid white;
+   display: flex;
+   align-items: center;
+   justify-content: center;
 }
 </style>

@@ -2,25 +2,25 @@ import { useQuery } from "@tanstack/vue-query";
 import { authApiService } from "../../services/authApiService";
 
 export function useLoginWithToken() {
-  const {
-    data: loggedInUser,
-    error: errorLoggedInUser,
-    isLoading: isLoadingLoggedInUser,
-    isSuccess: isSuccessLoggedInUser,
-    isError: isErrorLoggedInUser,
-    isFetched: isFetchedLoggedInUser,
-  } = useQuery({
-    queryKey: ["loggedInUser"],
-    queryFn: authApiService.loginWithToken,
-    retry: false,
-  });
+   const {
+      data: loggedInUser,
+      error: errorLoggedInUser,
+      isLoading: isLoadingLoggedInUser,
+      isSuccess: isSuccessLoggedInUser,
+      isError: isErrorLoggedInUser,
+      isFetched: isFetchedLoggedInUser,
+   } = useQuery({
+      queryKey: ["loggedInUser"],
+      queryFn: authApiService.loginWithToken,
+      retry: false,
+   });
 
-  return {
-    loggedInUser,
-    errorLoggedInUser,
-    isLoadingLoggedInUser,
-    isSuccessLoggedInUser,
-    isErrorLoggedInUser,
-    isFetchedLoggedInUser,
-  };
+   return {
+      loggedInUser,
+      errorLoggedInUser,
+      isLoadingLoggedInUser,
+      isSuccessLoggedInUser,
+      isErrorLoggedInUser,
+      isFetchedLoggedInUser,
+   };
 }

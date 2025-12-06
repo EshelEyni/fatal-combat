@@ -1,36 +1,36 @@
 export function createTimer({
-  seconds,
-  onTick,
-  onDone,
+   seconds,
+   onTick,
+   onDone,
 }: {
-  seconds: number;
-  onTick: (s: number) => void;
-  onDone: () => void;
+   seconds: number;
+   onTick: (s: number) => void;
+   onDone: () => void;
 }) {
-  let current = seconds;
-  let id: number | null = null;
+   let current = seconds;
+   let id: number | null = null;
 
-  const tick = () => {
-    if (current > 0) {
-      id = window.setTimeout(tick, 1000);
-      current -= 1;
-      onTick(current);
-      if (current === 0) onDone();
-    }
-  };
+   const tick = () => {
+      if (current > 0) {
+         id = window.setTimeout(tick, 1000);
+         current -= 1;
+         onTick(current);
+         if (current === 0) onDone();
+      }
+   };
 
-  return {
-    start() {
-      if (id != null) return;
-      onTick(current);
-      id = window.setTimeout(tick, 1000);
-    },
-    stop() {
-      if (id != null) clearTimeout(id);
-      id = null;
-    },
-    get value() {
-      return current;
-    },
-  };
+   return {
+      start() {
+         if (id != null) return;
+         onTick(current);
+         id = window.setTimeout(tick, 1000);
+      },
+      stop() {
+         if (id != null) clearTimeout(id);
+         id = null;
+      },
+      get value() {
+         return current;
+      },
+   };
 }

@@ -7,19 +7,19 @@ const router = useRouter();
 const { signup } = useSignup();
 
 const handleSubmit = (cred: { username: string; password: string }) => {
-    console.log(cred);
-    
-  signup(cred, {
-    onSuccess: () => router.push("/"),
-  });
+   console.log(cred);
+
+   signup(cred, {
+      onSuccess: () => router.push("/"),
+   });
 };
 </script>
 
 <template>
-  <AuthForm
-    title="Signup"
-    submitLabel="Signup"
-    :onSubmit="handleSubmit"
-    :onBack="() => router.push('/')"
-  />
+   <AuthForm
+      title="Signup"
+      submitLabel="Signup"
+      :onSubmit="handleSubmit"
+      :onBack="() => router.push('/')"
+   />
 </template>
