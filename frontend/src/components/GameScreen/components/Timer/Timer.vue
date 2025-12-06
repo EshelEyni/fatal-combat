@@ -23,6 +23,7 @@ const decideAndEmitWinner = () => {
 
    if (!winner) return;
    emit("done", winner);
+   timerCtl.stop();
 };
 
 const timerCtl = createTimer({
