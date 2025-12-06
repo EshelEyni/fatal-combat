@@ -3,8 +3,8 @@ import { Sprite } from "../../../classes/Sprite";
 import { canvasBackgroundConfig } from "../../../config/canvasBackground";
 import { shopCofnig } from "../../../config/shop";
 import { Fighter } from "../../../classes/Fighter";
-import { playerConfig } from "../../../config/player";
-import { enemyConfig } from "../../../config/enemy";
+import { getPlayerConfig } from "../../../config/player";
+import { getEnemyConfig } from "../../../config/enemy";
 import { canvasConfig } from "../../../config/canvas";
 import type { KeyState } from "./types/KeyState";
 import { GameMode } from "./types/GameMode";
@@ -25,8 +25,8 @@ export function useGameEngine(gameMode: GameMode) {
 
    const background = new Sprite(canvasBackgroundConfig);
    const shop = new Sprite(shopCofnig);
-   const player_1 = reactive(new Fighter(playerConfig));
-   const player_2 = reactive(new Fighter(enemyConfig));
+   const player_1 = reactive(new Fighter(getPlayerConfig()));
+   const player_2 = reactive(new Fighter(getEnemyConfig()));
 
    let frame = 0;
    const { update } = createAIDecisionEngine(player_1, player_2);
