@@ -4,36 +4,42 @@ import { isHitDetected } from "./attack";
 // const jumpChance = 0.75;
 const reaction = 12;
 
-export const createAIDecisionEngine = (player: Fighter, enemy: Fighter) => {
+type CreateAIDecisionEngineParams = { userFighter: Fighter; cpuFighter: Fighter };
+
+export const createAIDecisionEngine = ({
+   userFighter,
+   cpuFighter,
+}: CreateAIDecisionEngineParams) => {
    let frame = 0;
 
    function update(frame: number) {
-      const playerIsLeft = player.position.x < enemy.position.x;
+      const playerIsLeft = userFighter.position.x < cpuFighter.position.x;
       const attackChance = Math.random() < 0.1;
-      const isTakingHit = enemy.image === enemy.sprites.takeHit.image && enemy.framesCurrent <= 3;
+      const isTakingHit =
+         cpuFighter.image === cpuFighter.sprites.takeHit.image && cpuFighter.framesCurrent <= 2;
 
       const isAttackWouldHit = isHitDetected({
-         rectangle1: enemy.attackBox,
+         rectangle1: cpuFighter.attackBox,
          rectangle2: {
-            position: player.position,
-            width: player.width,
-            height: player.height,
+            position: userFighter.position,
+            width: userFighter.width,
+            height: userFighter.height,
          },
       });
 
-      if (frame % reaction !== 0 || enemy.dead) return;
+      if (frame % reaction !== 0 || cpuFighter.dead) return;
 
       if (!isAttackWouldHit) {
          if (playerIsLeft) {
-            enemy.velocity.x = -8;
-            enemy.switchSprite("run");
+            cpuFighter.velocity.x = -8;
+            cpuFighter.switchSprite("run");
          } else {
-            enemy.velocity.x = 8;
-            enemy.switchSprite("run");
+            cpuFighter.velocity.x = 8;
+            cpuFighter.switchSprite("run");
          }
       } else {
-         enemy.velocity.x = 0;
-         enemy.switchSprite("idle");
+         cpuFighter.velocity.x = 0;
+         cpuFighter.switchSprite("idle");
       }
 
       //   if (Math.random() < jumpChance) {
@@ -41,8 +47,8 @@ export const createAIDecisionEngine = (player: Fighter, enemy: Fighter) => {
       //   }
 
       if (isAttackWouldHit && attackChance && !isTakingHit) {
-         enemy.attack();
-         enemy.velocity.x = 0;
+         cpuFighter.attack();
+         cpuFighter.velocity.x = 0;
       }
    }
 

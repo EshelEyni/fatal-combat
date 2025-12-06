@@ -29,7 +29,10 @@ export function useGameEngine(gameMode: GameMode) {
    const player_2 = reactive(new Fighter(getEnemyConfig()));
 
    let frame = 0;
-   const { update } = createAIDecisionEngine(player_1, player_2);
+   const { update } = createAIDecisionEngine({
+      userFighter: player_1,
+      cpuFighter: player_2,
+   });
 
    const animate = ({ canvas }: { canvas: HTMLCanvasElement }) => {
       const canvasContext = canvas.getContext("2d")!;
