@@ -4,13 +4,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { createTimer } from "./createTimer";
+import { createTimer, determineWinner } from "./createTimer";
 
 const props = defineProps<{
    player1Health: number;
    player2Health: number;
 }>();
-console.log(props);
 
 const emit = defineEmits<{
    (e: "done", winner: string | null): void;
@@ -19,21 +18,20 @@ const emit = defineEmits<{
 const defaultSeconds = 90;
 const time = ref(defaultSeconds);
 
+const decideAndEmitWinner = () => {
+   const winner = determineWinner(props.player1Health, props.player2Health, time.value);
+
+   if (!winner) return;
+   emit("done", winner);
+};
+
 const timerCtl = createTimer({
    seconds: defaultSeconds,
    onTick: s => {
       time.value = s;
+      decideAndEmitWinner();
    },
-   onDone: () => {
-      const winner =
-         props.player1Health === props.player2Health
-            ? "tie"
-            : props.player1Health > props.player2Health
-              ? "player_1"
-              : "player_2";
-
-      emit("done", winner);
-   },
+   onDone: decideAndEmitWinner,
 });
 
 onMounted(() => timerCtl.start());

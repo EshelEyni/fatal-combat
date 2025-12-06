@@ -34,3 +34,17 @@ export function createTimer({
       },
    };
 }
+
+export function determineWinner(
+   p1: number,
+   p2: number,
+   timeLeft: number,
+): "player_1" | "player_2" | "tie" | null {
+   if (p1 <= 0) return "player_2";
+   if (p2 <= 0) return "player_1";
+
+   if (timeLeft > 0) return null;
+
+   if (p1 === p2) return "tie";
+   return p1 > p2 ? "player_1" : "player_2";
+}
