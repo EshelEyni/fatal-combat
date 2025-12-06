@@ -1,8 +1,6 @@
 import type { Fighter } from "../../../../classes/Fighter";
-import { isHitDetected } from "./attack";
 
-// const jumpChance = 0.75;
-const reaction = 12;
+const reaction = 30;
 
 type CreateAIDecisionEngineParams = { userFighter: Fighter; cpuFighter: Fighter };
 
@@ -13,40 +11,26 @@ export const createAIDecisionEngine = ({
    let frame = 0;
 
    function update(frame: number) {
-      const playerIsLeft = userFighter.position.x < cpuFighter.position.x;
       const attackChance = Math.random() < 0.1;
       const isTakingHit =
          cpuFighter.image === cpuFighter.sprites.takeHit.image && cpuFighter.framesCurrent <= 2;
 
-      const isAttackWouldHit = isHitDetected({
-         rectangle1: cpuFighter.attackBox,
-         rectangle2: {
-            position: userFighter.position,
-            width: userFighter.width,
-            height: userFighter.height,
-         },
-      });
+      const playerIsLeft = userFighter.position.x < cpuFighter.position.x;
+      const distance = Math.abs(userFighter.position.x - cpuFighter.position.x);
+      const deadzone = cpuFighter.attackBox.width * 0.8;
+      const enemyIsInAttackRange = deadzone - distance >= 0;
 
       if (frame % reaction !== 0 || cpuFighter.dead) return;
 
-      if (!isAttackWouldHit) {
-         if (playerIsLeft) {
-            cpuFighter.velocity.x = -8;
-            cpuFighter.switchSprite("run");
-         } else {
-            cpuFighter.velocity.x = 8;
-            cpuFighter.switchSprite("run");
-         }
+      if (!enemyIsInAttackRange) {
+         cpuFighter.velocity.x = playerIsLeft ? -8 : 8;
+         cpuFighter.switchSprite("run");
       } else {
          cpuFighter.velocity.x = 0;
          cpuFighter.switchSprite("idle");
       }
 
-      //   if (Math.random() < jumpChance) {
-      //      enemy.velocity.y = -20;
-      //   }
-
-      if (isAttackWouldHit && attackChance && !isTakingHit) {
+      if (enemyIsInAttackRange && attackChance && !isTakingHit) {
          cpuFighter.attack();
          cpuFighter.velocity.x = 0;
       }
