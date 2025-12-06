@@ -32,7 +32,6 @@ import Button from "primevue/button";
 import { useKeyboardMenu } from "../composables/useKeyboardMenu";
 
 const props = defineProps<{
-   title: string;
    submitLabel: string;
    onSubmit: (credentials: { username: string; password: string }) => void;
    onBack: () => void;

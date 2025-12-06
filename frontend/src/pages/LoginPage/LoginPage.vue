@@ -1,7 +1,6 @@
 <template>
    <AuthForm
-      title="Signup"
-      submitLabel="Signup"
+      submitLabel="Login"
       :onSubmit="handleSubmit"
       :onBack="() => router.push('/')"
    />
