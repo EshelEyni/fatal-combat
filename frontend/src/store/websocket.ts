@@ -19,7 +19,6 @@ export const useWebSocketStore = defineStore("websocket", {
 
          this.socket.onopen = () => {
             this.isConnected = true;
-            console.log("WebSocket connected");
          };
 
          this.socket.onclose = () => {
@@ -38,7 +37,7 @@ export const useWebSocketStore = defineStore("websocket", {
       },
 
       subscribe(handler: (msg: any) => void) {
-         if (!this.socket) return console.log("sdfsdf");
+         if (!this.socket) return;
          this.socket.onmessage = event => {
             handler(JSON.parse(event.data));
          };

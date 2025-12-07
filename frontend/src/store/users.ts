@@ -34,6 +34,10 @@ export const useOnlineUsersStore = defineStore("onlineUsers", {
             if (msg.type === "lobby_user_left") {
                this.onlineUsers = this.onlineUsers.filter(u => u.id !== msg.user.id);
             }
+            if (msg.type === "game_invite") {
+               console.log(msg);
+               
+            }
          });
       },
       setOnlineUsers(list: User[]) {

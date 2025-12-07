@@ -2,6 +2,7 @@ from fastapi import WebSocket, WebSocketDisconnect
 import json
 
 from .event_handlers.join_lobby import handle_join_lobby
+from .event_handlers.invite import invite
 from .state import active_users
 from .utils import broadcast_except
 
@@ -15,9 +16,11 @@ async def ws_endpoint(websocket: WebSocket):
             raw = await websocket.receive_text()
             data = json.loads(raw)
             event = data.get("type")
-
+            print("raw", data)
             if event == "join_lobby":
                 current_user_id = await handle_join_lobby(websocket, data)
+            if event == "send_game_invite":
+                 await invite(websocket, data)
 
     except WebSocketDisconnect:
         if current_user_id in active_users:
