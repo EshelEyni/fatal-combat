@@ -1,6 +1,6 @@
 from fastapi import WebSocket
 from ..state import active_users
-from ..utils import broadcast_except
+from ..utils.broadcast_except import broadcast_except
 
 async def handle_join_lobby(websocket: WebSocket, data):
     user = data["user"]

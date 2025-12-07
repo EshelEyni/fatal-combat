@@ -11,8 +11,6 @@ export function useWebSocket(url: string, handleMessage: (message: any) => void)
    onMounted(() => {
       socket.value.onmessage = event => {
          const msg = JSON.parse(event.data);
-         console.log(msg);
-         
          handleMessage(msg);
       };
    });
