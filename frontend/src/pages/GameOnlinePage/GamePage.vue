@@ -1,21 +1,9 @@
-<template>
-   <GameScreen :player_1="player_1" :player_2="player_2" ref="gameCanvasComponent" />
-</template>
+<template></template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import GameScreen from "../../components/GameScreen/GameScreen .vue";
-import { useGameEngine } from "../../composables/gameEngine/useGameEngine/useGameEngine";
-import { GameMode } from "../../composables/gameEngine/useGameEngine/types/GameMode";
+import { useWebSocket } from "../../composables/useWebsockets";
 
-const { canvasEl, player_1, player_2 } = useGameEngine(GameMode.ONLINE_MULTIPLAYER);
-
-const gameCanvasComponent = ref<InstanceType<typeof GameScreen> | null>(null);
-
-onMounted(() => {
-   if (!gameCanvasComponent.value) return;
-   canvasEl.value = gameCanvasComponent.value.canvasRef;
-});
+const { socket, send } = useWebSocket("ws://localhost:8000/ws");
 </script>
 
 <style scoped>

@@ -7,6 +7,9 @@
 
 <script setup>
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
+import { useLoginWithToken } from "./composables/auth/useLoginWithToken";
+
+useLoginWithToken();
 </script>
 
 <style>
