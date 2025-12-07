@@ -7,7 +7,12 @@ import { useWebSocket } from "../../composables/useWebsockets";
 const url = "ws://localhost:8000/ws";
 
 const { loggedInUser } = useLoginWithToken();
-const { socket, send } = useWebSocket(url);
+
+const handleMessage = (msg: any) => {
+   console.log("Message from server ", msg);
+};
+
+const { socket, send, messages } = useWebSocket(url, handleMessage);
 
 onMounted(() => {
    if (!loggedInUser.value) return;
@@ -15,11 +20,15 @@ onMounted(() => {
    socket.value.onopen = () => {
       const stringifedMsg = JSON.stringify({
          type: "join_lobby",
-         username: loggedInUser.value.id,
+         user: loggedInUser.value,
       });
 
       socket.value.send(stringifedMsg);
    };
+});
+
+watch(messages, newMessages => {
+   console.log("New message received:", newMessages);
 });
 </script>
 

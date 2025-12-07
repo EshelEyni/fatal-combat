@@ -2,11 +2,7 @@ from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from database.database import init_db
 from auth.auth import router as auth_router
-from fastapi.websockets import WebSocketDisconnect
-from uuid import uuid4
-from typing import Dict, Any
-import json
-
+from sockets.router import ws_endpoint
 
 app = FastAPI()
 app.add_middleware(
@@ -26,32 +22,6 @@ def root():
     return {"message": "Server OK"}
 
 
-connected_users = set()
-
-
-async def broadcast(message: Dict[str, Any]):
-    data = json.dumps(message)
-    for user in connected_users:
-        await user.send_text(data)
-
-
 @app.websocket("/ws")
-async def ws_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    print("socket triggered")
-
-    try:
-        while True:  # <-- YOU NEED THIS
-            msg = await websocket.receive_text()
-            print("received raw:", msg)
-
-            try:
-                data = json.loads(msg)
-                print("parsed json:", data)
-            except Exception as json_err:
-                print("JSON parse error:", json_err)
-
-    except WebSocketDisconnect:
-        print("client disconnected")
-    except Exception as recv_err:
-        print("Receive error:", recv_err)
+async def websocket_router(websocket: WebSocket):
+    return await ws_endpoint(websocket)
