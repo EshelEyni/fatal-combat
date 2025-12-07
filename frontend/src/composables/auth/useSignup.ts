@@ -1,7 +1,9 @@
-import { useMutation } from "@tanstack/vue-query";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { authApiService } from "../../services/authApiService";
 
 export const useSignup = () => {
+   const queryClient = useQueryClient();
+
    const {
       mutate: signup,
       isPending: isPendingSignup,
@@ -11,6 +13,7 @@ export const useSignup = () => {
       mutationFn: authApiService.signup,
       onSuccess: data => {
          console.log("Signup success:", data);
+         queryClient.setQueryData(["loggedInUser"], data);
       },
       onError: (e: Error) => {
          console.log(e.message);
