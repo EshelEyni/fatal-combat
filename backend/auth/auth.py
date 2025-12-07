@@ -58,7 +58,7 @@ def register(
         max_age=60 * 60,
         path="/",
     )
-    return {"message": "User created", "data": user}
+    return {"message": "User created", "status": "success", "data": user}
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -88,7 +88,7 @@ def login(
         path="/",
     )
 
-    return {"message": "Logged in", "data": user}
+    return {"message": "Logged in", "status": "success", "data": user}
 
 
 @router.get("/login-with-token")
@@ -110,11 +110,15 @@ def get_current_user(
     if not user:
         raise HTTPException(401, "User not found")
 
-    return {"data": user}
+    return {"message": "Logged in With Token", "status": "success", "data": user}
 
 
 @router.post("/logout")
 def logout(response: Response):
     response.delete_cookie(key="fatalCombatJWT", path="/")
 
-    return {"status": "success", "data": {"msg": "Logged out successfully"}}
+    return {
+        "message": "logout",
+        "status": "success",
+        "data": {"msg": "Logged out successfully"},
+    }

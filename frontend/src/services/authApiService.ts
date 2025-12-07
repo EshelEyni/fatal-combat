@@ -1,17 +1,22 @@
+import type { User } from "../type/user";
 import { httpService } from "./httpService";
+import { handleServerResponseData } from "./utils/handleServerResponseData";
 
 const baseUrl = "auth";
 
-const signup = async (body: { username: string; password: string }) => {
-   return await httpService.post(`${baseUrl}/signup`, body);
+const signup = async (body: { username: string; password: string }): Promise<User> => {
+   const res = await httpService.post(`${baseUrl}/signup`, body);
+   return handleServerResponseData<User>(res);
 };
 
-const login = async (body: { username: string; password: string }) => {
-   return await httpService.post(`${baseUrl}/login`, body);
+const login = async (body: { username: string; password: string }): Promise<User> => {
+   const res = await httpService.post(`${baseUrl}/login`, body);
+   return handleServerResponseData<User>(res);
 };
 
-const loginWithToken = async () => {
-   return await httpService.get(`${baseUrl}/login-with-token`);
+const loginWithToken = async (): Promise<User> => {
+   const res = await httpService.get(`${baseUrl}/login-with-token`);
+   return handleServerResponseData<User>(res);
 };
 
 async function logout(): Promise<void> {
