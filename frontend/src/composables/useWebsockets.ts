@@ -2,7 +2,6 @@ import { ref, onBeforeUnmount, onMounted } from "vue";
 
 export function useWebSocket(url: string, handleMessage: (message: any) => void) {
    const socket = ref<WebSocket>(new WebSocket(url));
-   const messages = ref<any[]>([]);
 
    function send(data: any) {
       socket.value?.send(JSON.stringify(data));
@@ -19,5 +18,5 @@ export function useWebSocket(url: string, handleMessage: (message: any) => void)
       socket.value?.close();
    });
 
-   return { socket, send, messages };
+   return { socket, send };
 }

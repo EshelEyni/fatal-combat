@@ -5,11 +5,26 @@
    <VueQueryDevtools />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 import { useLoginWithToken } from "./composables/auth/useLoginWithToken";
+import { useOnlineUsersStore } from "./store/users";
+import { watch } from "vue";
+import { useWebSocketStore } from "./store/websocket";
+import { storeToRefs } from "pinia";
 
-useLoginWithToken();
+const { initListeners } = useOnlineUsersStore();
+const webSocketStore = useWebSocketStore();
+const { isConnected } = storeToRefs(webSocketStore);
+const { loggedInUser } = useLoginWithToken();
+
+webSocketStore.connect();
+initListeners();
+
+watch([isConnected, loggedInUser], ([newConnectionStatus, newLoggedInUser]) => {
+   if (!newConnectionStatus || !newLoggedInUser) return;
+   webSocketStore.joinLobby(newLoggedInUser);
+});
 </script>
 
 <style>
