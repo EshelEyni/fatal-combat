@@ -12,7 +12,7 @@ export const useWebSocketStore = defineStore("websocket", {
    },
 
    actions: {
-      connect() {
+      connect(messageHandler: (msg: any) => void) {
          if (this.socket) return;
 
          this.socket = new WebSocket("ws://localhost:8000/ws");
@@ -26,21 +26,18 @@ export const useWebSocketStore = defineStore("websocket", {
             this.socket = null;
          };
 
-         this.socket.onerror = err => {
+         this.socket.onerror = (err: Event) => {
             console.error("WS error:", err);
+         };
+
+         this.socket.onmessage = (event: MessageEvent) => {
+            messageHandler(JSON.parse(event.data));
          };
       },
 
       send(data: any) {
          if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
          this.socket.send(JSON.stringify(data));
-      },
-
-      subscribe(handler: (msg: any) => void) {
-         if (!this.socket) return;
-         this.socket.onmessage = event => {
-            handler(JSON.parse(event.data));
-         };
       },
 
       joinLobby(user: User) {

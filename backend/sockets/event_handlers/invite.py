@@ -15,6 +15,7 @@ async def invite(websocket: WebSocket, data):
         return
 
     curr_active_user = active_users.get(str(to_user_id))
+    print(curr_active_user)
     to_user_websocket = curr_active_user["ws"]
 
     if not to_user_websocket:
@@ -28,6 +29,7 @@ async def invite(websocket: WebSocket, data):
     invite_message = {
         "type": "game_invite",
         "from_user_id": from_user_id,
+        "from_user_name": curr_active_user["user"]["username"],
         "message": "You have been invited to a game!",
     }
 

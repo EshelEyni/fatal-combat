@@ -2,24 +2,32 @@
    <h1 class="text-6xl font-bold mb-6 italic title">Fatal Combat</h1>
 
    <router-view />
+   <Toast position="bottom-center" />
    <VueQueryDevtools />
 </template>
 
 <script setup lang="ts">
+import Toast from "primevue/toast";
+
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 import { useLoginWithToken } from "./composables/auth/useLoginWithToken";
 import { useOnlineUsersStore } from "./store/users";
 import { watch } from "vue";
 import { useWebSocketStore } from "./store/websocket";
 import { storeToRefs } from "pinia";
-
-const { initListeners } = useOnlineUsersStore();
+import { useInviteMessageStore } from "./store/invites";
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
+const onlineUsersStore = useOnlineUsersStore();
+const inviteMessageStore = useInviteMessageStore();
 const webSocketStore = useWebSocketStore();
 const { isConnected } = storeToRefs(webSocketStore);
 const { loggedInUser } = useLoginWithToken();
 
-webSocketStore.connect();
-initListeners();
+webSocketStore.connect((msg: any) => {
+   onlineUsersStore.socketEventHandler(msg);
+   inviteMessageStore.socketEventHandler(msg, toast);
+});
 
 watch([isConnected, loggedInUser], ([newConnectionStatus, newLoggedInUser]) => {
    if (!newConnectionStatus || !newLoggedInUser) return;

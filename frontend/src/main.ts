@@ -11,6 +11,7 @@ import "primeflex/primeflex.css"; // ← utilities (p-4, bg-primary, text-white,
 
 import router from "./router";
 import { StreetFighterTheme } from "./theme";
+import ToastService from "primevue/toastservice";
 
 const app = createApp(App);
 
@@ -21,4 +22,7 @@ app.use(VueQueryPlugin);
 app.use(router);
 
 app.use(PrimeVue, { theme: StreetFighterTheme });
+
+app.use(ToastService);
+
 app.mount("#app");

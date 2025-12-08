@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import type { User } from "../type/user";
-import { useWebSocketStore } from "./websocket";
 
 export const useOnlineUsersStore = defineStore("onlineUsers", {
    state: () => ({
@@ -21,24 +20,16 @@ export const useOnlineUsersStore = defineStore("onlineUsers", {
       },
    },
    actions: {
-      initListeners() {
-         const ws = useWebSocketStore();
-
-         ws.subscribe((msg: any) => {
-            if (msg.type === "lobby_users") {
-               this.onlineUsers = msg.users;
-            }
-            if (msg.type === "lobby_user_joined") {
-               this.onlineUsers.push(msg.user);
-            }
-            if (msg.type === "lobby_user_left") {
-               this.onlineUsers = this.onlineUsers.filter(u => u.id !== msg.user.id);
-            }
-            if (msg.type === "game_invite") {
-               console.log(msg);
-               
-            }
-         });
+      socketEventHandler(msg: any) {
+         if (msg.type === "lobby_users") {
+            this.onlineUsers = msg.users;
+         }
+         if (msg.type === "lobby_user_joined") {
+            this.onlineUsers.push(msg.user);
+         }
+         if (msg.type === "lobby_user_left") {
+            this.onlineUsers = this.onlineUsers.filter(u => u.id !== msg.user.id);
+         }
       },
       setOnlineUsers(list: User[]) {
          this.onlineUsers = list;
