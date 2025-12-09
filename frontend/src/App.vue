@@ -1,14 +1,16 @@
 <template>
    <h1 class="text-6xl font-bold mb-6 italic title">Fatal Combat</h1>
-
+   <InviteMessage
+      v-for="(invite, index) in inviteMessageStore.inviteMessages"
+      :key="index"
+      :fromUser="{ id: invite.from_user_id, username: invite.from_user_name }"
+      :text="invite.text"
+   />
    <router-view />
-   <Toast position="bottom-center" />
    <VueQueryDevtools />
 </template>
 
 <script setup lang="ts">
-import Toast from "primevue/toast";
-
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 import { useLoginWithToken } from "./composables/auth/useLoginWithToken";
 import { useOnlineUsersStore } from "./store/users";
@@ -16,8 +18,8 @@ import { watch } from "vue";
 import { useWebSocketStore } from "./store/websocket";
 import { storeToRefs } from "pinia";
 import { useInviteMessageStore } from "./store/invites";
-import { useToast } from "primevue/usetoast";
-const toast = useToast();
+import InviteMessage from "./components/InviteMessage.vue";
+
 const onlineUsersStore = useOnlineUsersStore();
 const inviteMessageStore = useInviteMessageStore();
 const webSocketStore = useWebSocketStore();
@@ -26,7 +28,7 @@ const { loggedInUser } = useLoginWithToken();
 
 webSocketStore.connect((msg: any) => {
    onlineUsersStore.socketEventHandler(msg);
-   inviteMessageStore.socketEventHandler(msg, toast);
+   inviteMessageStore.socketEventHandler(msg);
 });
 
 watch([isConnected, loggedInUser], ([newConnectionStatus, newLoggedInUser]) => {

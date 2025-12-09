@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { useToast } from "primevue/usetoast";
 
 export const useInviteMessageStore = defineStore("inviteMessage", {
    state: () => ({
@@ -7,17 +6,9 @@ export const useInviteMessageStore = defineStore("inviteMessage", {
    }),
    getters: {},
    actions: {
-      socketEventHandler(msg: any, toast: ReturnType<typeof useToast>) {
+      socketEventHandler(msg: any) {
          if (msg.type === "game_invite") {
-            this.inviteMessages.push(msg);
-            console.log(msg);
-
-            toast.add({
-               severity: "success",
-               summary: "Game Invite",
-               detail: `New game invite from ${msg.from_user_name}`,
-               life: 90000,
-            });
+            this.inviteMessages.push({ ...msg, receivedAt: new Date(), isClosed: false });
          }
       },
    },
