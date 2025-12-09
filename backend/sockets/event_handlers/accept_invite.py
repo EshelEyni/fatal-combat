@@ -7,8 +7,10 @@ async def accept_invite(websocket, data):
     inviter_id = data["fromUserId"]
     accepter_id = data["toUserId"]
 
-    inviter_ws = active_users[inviter_id]["ws"]
-    accepter_ws = active_users[accepter_id]["ws"]
+    inviter = active_users.get(str(inviter_id))
+    accepter = active_users.get(str(accepter_id))
+    inviter_ws = inviter["ws"]
+    accepter_ws = accepter["ws"]
 
     room_id = f"room-{uuid4().hex[:8]}"
 
@@ -24,7 +26,7 @@ async def accept_invite(websocket, data):
             "type": "room_joined",
             "room_id": room_id,
             "you_are": "player1",
-            "opponent": active_users[accepter_id]["user"],
+            "opponent": accepter["user"]["username"],
         },
     )
 
@@ -34,7 +36,7 @@ async def accept_invite(websocket, data):
             "type": "room_joined",
             "room_id": room_id,
             "you_are": "player2",
-            "opponent": active_users[inviter_id]["user"],
+            "opponent": inviter["user"]["username"],
         },
     )
 

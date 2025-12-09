@@ -31,6 +31,8 @@ export const useWebSocketStore = defineStore("websocket", {
          };
 
          this.socket.onmessage = (event: MessageEvent) => {
+            console.log(event.data);
+            
             messageHandler(JSON.parse(event.data));
          };
       },
