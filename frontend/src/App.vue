@@ -28,7 +28,7 @@ const { loggedInUser } = useLoginWithToken();
 
 webSocketStore.connect((msg: any) => {
    onlineUsersStore.socketEventHandler(msg);
-   inviteMessageStore.socketEventHandler(msg);
+   inviteMessageStore.socketEventHandler(msg, loggedInUser.value?.id);
 });
 
 watch([isConnected, loggedInUser], ([newConnectionStatus, newLoggedInUser]) => {
