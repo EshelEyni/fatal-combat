@@ -48,30 +48,26 @@ export function useGameEngine(gameMode: GameMode, roomDetails?: any) {
       player_2.update(canvasContext);
 
       if (gameMode === GameMode.ONLINE_MULTIPLAYER) {
-         if (roomDetails.value.fighter === "player_1") {
-            handlePlayerMovement(player_1, {
-               left: {
-                  pressed: keysState.a.pressed,
-                  keyCode: "KeyA",
-               },
-               right: {
-                  pressed: keysState.d.pressed,
-                  keyCode: "KeyD",
-               },
-            });
-         }
-         if (roomDetails.value.fighter === "player_2") {
-            handlePlayerMovement(player_2, {
-               left: {
-                  pressed: keysState.ArrowLeft.pressed,
-                  keyCode: "ArrowLeft",
-               },
-               right: {
-                  pressed: keysState.ArrowRight.pressed,
-                  keyCode: "ArrowRight",
-               },
-            });
-         }
+         handlePlayerMovement(player_1, {
+            left: {
+               pressed: keysState.a.pressed,
+               keyCode: "KeyA",
+            },
+            right: {
+               pressed: keysState.d.pressed,
+               keyCode: "KeyD",
+            },
+         });
+         handlePlayerMovement(player_2, {
+            left: {
+               pressed: keysState.ArrowLeft.pressed,
+               keyCode: "ArrowLeft",
+            },
+            right: {
+               pressed: keysState.ArrowRight.pressed,
+               keyCode: "ArrowRight",
+            },
+         });
       }
 
       if (gameMode !== GameMode.ONLINE_MULTIPLAYER) {
@@ -118,12 +114,20 @@ export function useGameEngine(gameMode: GameMode, roomDetails?: any) {
    };
 
    const onKeyDown = (event: KeyboardEvent) => {
+      const disablePlayer1 =
+         gameMode === GameMode.ONLINE_MULTIPLAYER && roomDetails.value.fighter === "player_2";
+      const disablePlayer2 =
+         gameMode === GameMode.ONLINE_MULTIPLAYER && roomDetails.value.fighter === "player_1";
+
+      const player1Keys = ["KeyA", "KeyD", "KeyW", "KeyS", "Space"];
+      const player2Keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter"];
+
+      if (disablePlayer1 && player1Keys.includes(event.code)) return;
+      if (disablePlayer2 && player2Keys.includes(event.code)) return;
+
       handleKeyDownEvent(event.code);
 
       if (gameMode === GameMode.ONLINE_MULTIPLAYER) {
-         const player1Keys = ["KeyA", "KeyD", "KeyW", "KeyS", "Space"];
-         const player2Keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter"];
-
          if (
             (roomDetails.value.fighter === "player_1" && player1Keys.includes(event.code)) ||
             (roomDetails.value.fighter === "player_2" && player2Keys.includes(event.code))
