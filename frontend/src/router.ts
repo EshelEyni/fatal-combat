@@ -45,7 +45,7 @@ const router = createRouter({
    routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _, next) => {
    if (!to.meta.requiresAuth) return next();
    const user = await getIsUserLoggedIn();
    if (!user) return next("/");
