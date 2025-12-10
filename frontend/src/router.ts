@@ -6,16 +6,16 @@ const routes = [
    { path: "/", component: HomePage },
    {
       path: "/game-single",
-      component: () => import("./pages/GameSinglePage/GamePage.vue"),
+      component: () => import("./pages/GameSinglePage/GameSinglePage.vue"),
    },
    {
       path: "/game-online",
-      component: () => import("./pages/GameOnlinePage/GamePage.vue"),
+      component: () => import("./pages/GameOnlinePage/GameOnlinePage.vue"),
       meta: { requiresAuth: true },
    },
    {
       path: "/game-local",
-      component: () => import("./pages/GameLocalPage/GamePage.vue"),
+      component: () => import("./pages/GameLocalPage/GameLocalPage.vue"),
    },
    {
       path: "/game-mode",
