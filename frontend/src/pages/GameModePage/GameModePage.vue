@@ -1,4 +1,6 @@
 <template>
+   <InviteMessage />
+
    <div class="flex flex-column align-items-center gap-3">
       <Button
          v-for="(btn, i) in buttons"
@@ -14,6 +16,8 @@
 </template>
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import InviteMessage from "../../components/InviteMessage.vue";
+
 import { useLoginWithToken } from "../../composables/auth/useLoginWithToken";
 import { useKeyboardMenu } from "../../composables/useKeyboardMenu";
 import Button from "primevue/button";

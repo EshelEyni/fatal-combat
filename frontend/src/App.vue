@@ -1,11 +1,6 @@
 <template>
    <h1 class="text-6xl font-bold mb-6 italic title">Fatal Combat</h1>
-   <InviteMessage
-      v-for="(invite, index) in inviteMessageStore.inviteMessages"
-      :key="index"
-      :fromUser="{ id: invite.from_user_id, username: invite.from_user_name }"
-      :text="invite.text"
-   />
+
    <router-view />
    <VueQueryDevtools />
 </template>
@@ -18,7 +13,6 @@ import { watch } from "vue";
 import { useWebSocketStore } from "./store/websocket";
 import { storeToRefs } from "pinia";
 import { useInviteMessageStore } from "./store/invites";
-import InviteMessage from "./components/InviteMessage.vue";
 
 const onlineUsersStore = useOnlineUsersStore();
 const inviteMessageStore = useInviteMessageStore();

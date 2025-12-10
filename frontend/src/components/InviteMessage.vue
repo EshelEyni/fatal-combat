@@ -1,31 +1,30 @@
 <template>
-   <div class="invite-message">
+   <div
+      class="invite-message"
+      v-for="(invite, index) in inviteMessageStore.inviteMessages"
+      :key="index"
+   >
       <p>
-         <strong>{{ props.fromUser.username }}</strong> has invited you to a game!
+         <strong>{{ invite.fromUser.username }}</strong> has invited you to a game!
       </p>
-      <p>"{{ props.text }}"</p>
-      <button @click="onAcceptInviye">Accept Invite</button>
+      <p>"{{ invite.text }}"</p>
+      <button @click="() => onAcceptInvite(invite)">Accept Invite</button>
    </div>
 </template>
 <script setup lang="ts">
 import { useLoginWithToken } from "../composables/auth/useLoginWithToken";
+import { useInviteMessageStore } from "../store/invites";
 import { useWebSocketStore } from "../store/websocket";
+const inviteMessageStore = useInviteMessageStore();
 
-const props = defineProps<{
-   fromUser: {
-      id: string;
-      username: string;
-   };
-   text: string;
-}>();
 const { loggedInUser } = useLoginWithToken();
 
 const webSocketStore = useWebSocketStore();
 
-const onAcceptInviye = () => {
+const onAcceptInvite = (invite: any) => {
    webSocketStore.send({
       type: "accept_game_invite",
-      fromUserId: props.fromUser.id,
+      fromUserId: invite.fromUser.id,
       toUserId: loggedInUser.value?.id,
    });
 };

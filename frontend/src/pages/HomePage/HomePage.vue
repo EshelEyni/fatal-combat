@@ -1,4 +1,5 @@
 <template>
+   <InviteMessage />
    <div v-if="isLoadingLoggedInUser">Loading...</div>
    <div class="flex flex-column align-items-center gap-3" v-else>
       <Button
@@ -21,6 +22,7 @@ import { useRouter } from "vue-router";
 import { useLoginWithToken } from "../../composables/auth/useLoginWithToken";
 import { useKeyboardMenu } from "../../composables/useKeyboardMenu";
 import { useLogout } from "../../composables/auth/useLogout";
+import InviteMessage from "../../components/InviteMessage.vue";
 
 const router = useRouter();
 const { loggedInUser, isLoadingLoggedInUser } = useLoginWithToken();
