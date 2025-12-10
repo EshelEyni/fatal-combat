@@ -1,5 +1,6 @@
 <template>
    <div v-if="!inviteMessageStore.roomDetails">
+      <InviteMessage />
       <ul>
          <li
             v-for="user in onlineUsers"
@@ -12,13 +13,12 @@
       </ul>
    </div>
    <div v-else>
-      aaaaaaaaaaaaaaa
       <GameScreen :player_1="player_1" :player_2="player_2" ref="gameCanvasComponent" />
    </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useOnlineUsersStore } from "../../store/users";
 import { storeToRefs } from "pinia";
 import { useWebSocketStore } from "../../store/websocket";
@@ -27,6 +27,7 @@ import { useInviteMessageStore } from "../../store/invites";
 import { useGameEngine } from "../../composables/gameEngine/useGameEngine/useGameEngine";
 import { GameMode } from "../../composables/gameEngine/useGameEngine/types/GameMode";
 import GameScreen from "../../components/GameScreen/GameScreen .vue";
+import InviteMessage from "../../components/InviteMessage.vue";
 
 const webSocketStore = useWebSocketStore();
 const onlineUsersStore = useOnlineUsersStore();
@@ -34,8 +35,6 @@ const inviteMessageStore = useInviteMessageStore();
 const roomDetails = computed(() => inviteMessageStore.roomDetails);
 const { onlineUsers } = storeToRefs(onlineUsersStore);
 const { loggedInUser } = useLoginWithToken();
-
-// const currentScreen = ref<"lobby" | "game">("lobby");
 
 const onInviteToGame = (data: any) => {
    if (!webSocketStore.connectionStatus) return;
