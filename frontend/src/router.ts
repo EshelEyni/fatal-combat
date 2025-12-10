@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "./pages/HomePage/HomePage.vue";
+import { getIsUserLoggedIn } from "./services/utils/getIsUserLoggedIn";
 
 const routes = [
    { path: "/", component: HomePage },
@@ -10,6 +11,7 @@ const routes = [
    {
       path: "/game-online",
       component: () => import("./pages/GameOnlinePage/GamePage.vue"),
+      meta: { requiresAuth: true },
    },
    {
       path: "/game-local",
@@ -36,6 +38,13 @@ const routes = [
 const router = createRouter({
    history: createWebHistory(),
    routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+   if (!to.meta.requiresAuth) return next();
+   const user = await getIsUserLoggedIn();
+   if (!user) return next("/");
+   next();
 });
 
 export default router;
