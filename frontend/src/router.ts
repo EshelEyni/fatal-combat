@@ -33,6 +33,11 @@ const routes = [
       path: "/about",
       component: () => import("./pages/AboutPage/AboutPage.vue"),
    },
+   {
+      path: "/:pathMatch(.*)*",
+      name: "NotFound",
+      component: () => import("./pages/NotFoundPage/NotFoundPage.vue"),
+   },
 ];
 
 const router = createRouter({
