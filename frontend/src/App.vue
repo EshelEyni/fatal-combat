@@ -1,5 +1,7 @@
 <template>
-   <h1 class="text-6xl font-bold mb-6 italic title">Fatal Combat</h1>
+   <h1 class="text-6xl font-bold mb-6 italic title cursor-pointer" @click="onClickTitle">
+      Fatal Combat
+   </h1>
 
    <router-view />
    <VueQueryDevtools />
@@ -13,7 +15,9 @@ import { watch } from "vue";
 import { useWebSocketStore } from "./store/websocket";
 import { storeToRefs } from "pinia";
 import { useInviteMessageStore } from "./store/invites";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const onlineUsersStore = useOnlineUsersStore();
 const inviteMessageStore = useInviteMessageStore();
 const webSocketStore = useWebSocketStore();
@@ -24,6 +28,10 @@ webSocketStore.connect((msg: any) => {
    onlineUsersStore.socketEventHandler(msg);
    inviteMessageStore.socketEventHandler(msg, loggedInUser.value?.id);
 });
+
+const onClickTitle = () => {
+   router.push("/");
+};
 
 watch([isConnected, loggedInUser], ([newConnectionStatus, newLoggedInUser]) => {
    if (!newConnectionStatus || !newLoggedInUser) return;
