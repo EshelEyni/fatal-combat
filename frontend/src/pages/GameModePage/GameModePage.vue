@@ -1,5 +1,5 @@
 <template>
-   <InviteMessage />
+   <InviteMessagePopUp />
 
    <div class="flex flex-column align-items-center gap-3">
       <Button
@@ -16,7 +16,7 @@
 </template>
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import InviteMessage from "../../components/InviteMessage.vue";
+import InviteMessagePopUp from "../../components/InviteMessagePopUp.vue";
 
 import { useLoginWithToken } from "../../composables/auth/useLoginWithToken";
 import { useKeyboardMenu } from "../../composables/useKeyboardMenu";

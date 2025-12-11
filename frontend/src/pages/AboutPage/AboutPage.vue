@@ -1,5 +1,5 @@
 <template>
-   <InviteMessage />
+   <InviteMessagePopUp />
 
    <div class="about-wrapper">
       <p class="about-text">
@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import InviteMessage from "../../components/InviteMessage.vue";
+import InviteMessagePopUp from "../../components/InviteMessagePopUp.vue";
 </script>
 
 <style scoped>

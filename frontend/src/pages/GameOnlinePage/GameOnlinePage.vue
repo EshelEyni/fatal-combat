@@ -1,6 +1,6 @@
 <template>
    <div v-if="!inviteMessageStore.roomDetails">
-      <InviteMessage />
+      <InviteMessagePopUp />
       <ul>
          <li
             v-for="user in onlineUsers"
@@ -27,7 +27,7 @@ import { useInviteMessageStore } from "../../store/invites";
 import { useGameEngine } from "../../composables/gameEngine/useGameEngine/useGameEngine";
 import { GameMode } from "../../composables/gameEngine/useGameEngine/types/GameMode";
 import GameScreen from "../../components/GameScreen/GameScreen .vue";
-import InviteMessage from "../../components/InviteMessage.vue";
+import InviteMessagePopUp from "../../components/InviteMessagePopUp.vue";
 
 const webSocketStore = useWebSocketStore();
 const onlineUsersStore = useOnlineUsersStore();
