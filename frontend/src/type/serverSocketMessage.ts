@@ -2,7 +2,7 @@ import type { User } from "./user";
 
 export interface SocketGameInviteMessage {
    type: "game_invite";
-   from_user_id: number;
+   from_user_id: string;
    from_user_name: string;
    message: string;
 }

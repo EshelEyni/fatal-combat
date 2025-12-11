@@ -27,7 +27,7 @@ app.use(router);
 
 app.use(PrimeVue, { theme: StreetFighterTheme });
 
-app.config.errorHandler = (err, instance, info) => {
+app.config.errorHandler = (err, _, info) => {
    console.error("Global Vue error:", err, info);
 };
 
