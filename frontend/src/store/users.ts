@@ -8,13 +8,6 @@ export const useOnlineUsersStore = defineStore("onlineUsers", {
    getters: {
       onlineCount: state => state.onlineUsers.length,
 
-      uniqueUsers: state => {
-         const map = new Map();
-         state.onlineUsers.forEach(u => map.set(u.id, u));
-         return [...map.values()];
-      },
-
-      // example: find specific user
       getUserById: state => (id: string) => {
          return state.onlineUsers.find(u => u.id === id);
       },
@@ -25,7 +18,9 @@ export const useOnlineUsersStore = defineStore("onlineUsers", {
             this.onlineUsers = msg.users;
          }
          if (msg.type === "lobby_user_joined") {
-            this.onlineUsers.push(msg.user);
+            const map = new Map(this.onlineUsers.map(u => [u.id, u]));
+            map.set(msg.user.id, msg.user);
+            this.onlineUsers = Array.from(map.values());
          }
          if (msg.type === "lobby_user_left") {
             this.onlineUsers = this.onlineUsers.filter(u => u.id !== msg.user.id);
