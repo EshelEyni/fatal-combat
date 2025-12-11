@@ -1,6 +1,6 @@
 <template>
    <InviteMessagePopUp />
-   <div v-if="isLoadingLoggedInUser">Loading...</div>
+   <div v-if="isLoadingLoggedInUser"><Loader /></div>
    <div class="flex flex-column align-items-center gap-3" v-else>
       <Button
          v-for="(btn, i) in buttons"
@@ -23,6 +23,7 @@ import { useLoginWithToken } from "../../composables/auth/useLoginWithToken";
 import { useKeyboardMenu } from "../../composables/useKeyboardMenu";
 import { useLogout } from "../../composables/auth/useLogout";
 import InviteMessagePopUp from "../../components/InviteMessagePopUp.vue";
+import Loader from "../../components/Loader.vue";
 
 const router = useRouter();
 const { loggedInUser, isLoadingLoggedInUser } = useLoginWithToken();
