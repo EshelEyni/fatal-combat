@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import type { User } from "../type/user";
+import type { ServerSocketMessage } from "../type/serverSocketMessage";
+import type { ClientSocketMessage } from "../type/clientServerSocketMessage";
 
 export const useWebSocketStore = defineStore("websocket", {
    state: () => ({
@@ -12,7 +14,7 @@ export const useWebSocketStore = defineStore("websocket", {
    },
 
    actions: {
-      connect(messageHandler: (msg: any) => void) {
+      connect(messageHandler: (msg: ServerSocketMessage) => void) {
          if (this.socket) return;
 
          this.socket = new WebSocket("ws://localhost:8000/ws");
@@ -35,7 +37,7 @@ export const useWebSocketStore = defineStore("websocket", {
          };
       },
 
-      send(data: any) {
+      send(data: ClientSocketMessage) {
          if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
          this.socket.send(JSON.stringify(data));
       },

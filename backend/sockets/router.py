@@ -33,7 +33,7 @@ async def ws_endpoint(websocket: WebSocket):
             del active_users[current_user_id]
 
             await broadcast_except(
-                {"type": "lobby_user_left", "user": leaving_user}, exclude_ws=websocket
+                {"type": "user_left_lobby", "user": leaving_user}, exclude_ws=websocket
             )
 
         for room_id, room in list(active_rooms.items()):

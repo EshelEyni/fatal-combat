@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { useOnlineUsersStore } from "../../store/users";
 import { storeToRefs } from "pinia";
 import { useWebSocketStore } from "../../store/websocket";
@@ -34,7 +34,7 @@ import InviteMessagePopUp from "../../components/InviteMessagePopUp.vue";
 const webSocketStore = useWebSocketStore();
 const onlineUsersStore = useOnlineUsersStore();
 const inviteMessageStore = useInviteMessageStore();
-const roomDetails = computed(() => inviteMessageStore.roomDetails);
+const { roomDetails } = storeToRefs(inviteMessageStore);
 const { onlineUsers } = storeToRefs(onlineUsersStore);
 const { loggedInUser } = useLoginWithToken();
 

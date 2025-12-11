@@ -19,21 +19,27 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from "vue-router";
 import { useLoginWithToken } from "../composables/auth/useLoginWithToken";
 import { useInviteMessageStore } from "../store/invites";
 import { useWebSocketStore } from "../store/websocket";
 import type { GameInviteMessage } from "../type/inviteMessage";
 
+const router = useRouter();
 const inviteMessageStore = useInviteMessageStore();
 const { loggedInUser } = useLoginWithToken();
 const webSocketStore = useWebSocketStore();
 
-const onAcceptInvite = (invite: any) => {
+const onAcceptInvite = (invite: GameInviteMessage) => {
+   if (!loggedInUser.value) return;
+
    webSocketStore.send({
       type: "accept_game_invite",
       fromUserId: invite.fromUserId,
       toUserId: loggedInUser.value?.id,
    });
+
+   router.push("/game-online");
 };
 
 const onCloseInvite = (invite: GameInviteMessage) => {

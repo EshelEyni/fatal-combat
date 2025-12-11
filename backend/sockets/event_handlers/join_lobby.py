@@ -23,7 +23,7 @@ async def handle_join_lobby(websocket: WebSocket, data):
     })
 
     await broadcast_except({
-        "type": "lobby_user_joined",
+        "type": "user_joined_lobby",
         "user": user
     }, exclude_ws=websocket)
 

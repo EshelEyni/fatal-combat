@@ -16,6 +16,7 @@ import { useWebSocketStore } from "./store/websocket";
 import { storeToRefs } from "pinia";
 import { useInviteMessageStore } from "./store/invites";
 import { useRouter } from "vue-router";
+import type { ServerSocketMessage } from "./type/serverSocketMessage";
 
 const router = useRouter();
 const onlineUsersStore = useOnlineUsersStore();
@@ -24,7 +25,7 @@ const webSocketStore = useWebSocketStore();
 const { isConnected } = storeToRefs(webSocketStore);
 const { loggedInUser } = useLoginWithToken();
 
-webSocketStore.connect((msg: any) => {
+webSocketStore.connect((msg: ServerSocketMessage) => {
    onlineUsersStore.socketEventHandler(msg);
    inviteMessageStore.socketEventHandler(msg, loggedInUser.value?.id);
 });
@@ -83,7 +84,7 @@ watch([isConnected, loggedInUser], ([newConnectionStatus, newLoggedInUser]) => {
    transition: all 0.3s ease;
 }
 
-.menu-input.active {
+.menu-input:focus {
    border-color: #e83b06;
    color: #e83b06;
 }

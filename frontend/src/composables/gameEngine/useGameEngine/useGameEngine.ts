@@ -1,4 +1,4 @@
-import { onBeforeUnmount, reactive, ref, watch } from "vue";
+import { onBeforeUnmount, reactive, ref, watch, type Ref } from "vue";
 import { Sprite } from "../../../classes/Sprite";
 import { canvasBackgroundConfig } from "../../../config/canvasBackground";
 import { shopCofnig } from "../../../config/shop";
@@ -12,8 +12,12 @@ import { handleAttackCollision } from "./utils/attack";
 import { handlePlayerMovement } from "./utils/movement";
 import { createAIDecisionEngine } from "./utils/createAIDecisionEngine";
 import { useWebSocketStore } from "../../../store/websocket";
+import type { RoomDetails } from "../../../type/roomDetails";
 
-export function useGameEngine(gameMode: GameMode, roomDetails?: any) {
+export function useGameEngine(
+   gameMode: GameMode,
+   roomDetails?: Ref<RoomDetails | null, RoomDetails | null>,
+) {
    const webSocketStore = useWebSocketStore();
 
    const canvasEl = ref<HTMLCanvasElement | null>(null);
@@ -115,9 +119,13 @@ export function useGameEngine(gameMode: GameMode, roomDetails?: any) {
 
    const onKeyDown = (event: KeyboardEvent) => {
       const disablePlayer1 =
-         gameMode === GameMode.ONLINE_MULTIPLAYER && roomDetails.value.fighter === "player_2";
+         gameMode === GameMode.ONLINE_MULTIPLAYER &&
+         roomDetails?.value &&
+         roomDetails.value.fighter === "player_2";
       const disablePlayer2 =
-         gameMode === GameMode.ONLINE_MULTIPLAYER && roomDetails.value.fighter === "player_1";
+         gameMode === GameMode.ONLINE_MULTIPLAYER &&
+         roomDetails?.value &&
+         roomDetails.value.fighter === "player_1";
 
       const player1Keys = ["KeyA", "KeyD", "KeyW", "KeyS", "Space"];
       const player2Keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter"];
@@ -129,8 +137,12 @@ export function useGameEngine(gameMode: GameMode, roomDetails?: any) {
 
       if (gameMode === GameMode.ONLINE_MULTIPLAYER) {
          if (
-            (roomDetails.value.fighter === "player_1" && player1Keys.includes(event.code)) ||
-            (roomDetails.value.fighter === "player_2" && player2Keys.includes(event.code))
+            (roomDetails?.value &&
+               roomDetails.value.fighter === "player_1" &&
+               player1Keys.includes(event.code)) ||
+            (roomDetails?.value &&
+               roomDetails.value.fighter === "player_2" &&
+               player2Keys.includes(event.code))
          ) {
             webSocketStore.send({
                type: "key_event",
@@ -151,8 +163,12 @@ export function useGameEngine(gameMode: GameMode, roomDetails?: any) {
          const player2Keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter"];
 
          if (
-            (roomDetails.value.fighter === "player_1" && player1Keys.includes(event.code)) ||
-            (roomDetails.value.fighter === "player_2" && player2Keys.includes(event.code))
+            (roomDetails?.value &&
+               roomDetails.value.fighter === "player_1" &&
+               player1Keys.includes(event.code)) ||
+            (roomDetails?.value &&
+               roomDetails.value.fighter === "player_2" &&
+               player2Keys.includes(event.code))
          ) {
             webSocketStore.send({
                type: "key_event",
@@ -237,8 +253,6 @@ export function useGameEngine(gameMode: GameMode, roomDetails?: any) {
       webSocketStore.socket?.addEventListener("message", event => {
          const msg = JSON.parse(event.data);
          if (msg.type === "opponent_key_event") {
-            console.log(msg);
-
             if (msg.pressed) {
                handleKeyDownEvent(msg.key);
             } else {

@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import type { User } from "../type/user";
+import type { ServerSocketMessage } from "../type/serverSocketMessage";
 
 export const useOnlineUsersStore = defineStore("onlineUsers", {
    state: () => ({
@@ -13,16 +14,16 @@ export const useOnlineUsersStore = defineStore("onlineUsers", {
       },
    },
    actions: {
-      socketEventHandler(msg: any) {
+      socketEventHandler(msg: ServerSocketMessage) {
          if (msg.type === "lobby_users") {
             this.onlineUsers = msg.users;
          }
-         if (msg.type === "lobby_user_joined") {
+         if (msg.type === "user_joined_lobby") {
             const map = new Map(this.onlineUsers.map(u => [u.id, u]));
             map.set(msg.user.id, msg.user);
             this.onlineUsers = Array.from(map.values());
          }
-         if (msg.type === "lobby_user_left") {
+         if (msg.type === "user_left_lobby") {
             this.onlineUsers = this.onlineUsers.filter(u => u.id !== msg.user.id);
          }
       },

@@ -1,11 +1,12 @@
 import { defineStore } from "pinia";
 import type { GameInviteMessage } from "../type/inviteMessage";
-import type { SocketGameInviteMessage, SocketRoomJoinedMessage } from "../type/socketMessage";
+import type { ServerSocketMessage, SocketGameInviteMessage } from "../type/serverSocketMessage";
+import type { RoomDetails } from "../type/roomDetails";
 
 export const useInviteMessageStore = defineStore("inviteMessage", {
    state: () => ({
       inviteMessages: [] as GameInviteMessage[],
-      roomDetails: null as any,
+      roomDetails: null as RoomDetails | null,
    }),
    getters: {
       openInviteMessages(state): GameInviteMessage[] {
@@ -13,14 +14,12 @@ export const useInviteMessageStore = defineStore("inviteMessage", {
       },
    },
    actions: {
-      socketEventHandler(
-         msg: SocketGameInviteMessage | SocketRoomJoinedMessage,
-         loggedInUserId?: string,
-      ) {
+      socketEventHandler(msg: ServerSocketMessage, loggedInUserId?: string) {
          if (msg.type === "game_invite") {
             this.addInviteMessage(msg);
          }
          if (msg.type === "room_joined") {
+            if (!loggedInUserId) return;
             this.roomDetails = {
                roomId: msg.room_id,
                fighter: msg.you_are,

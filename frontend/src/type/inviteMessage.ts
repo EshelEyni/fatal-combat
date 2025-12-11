@@ -1,6 +1,6 @@
 export interface GameInviteMessage {
    message: string;
-   fromUserId: number;
+   fromUserId: string;
    fromUserName: string;
    isClosed: boolean;
    receivedAt: number;
