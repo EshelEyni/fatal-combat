@@ -7,7 +7,11 @@ export const useInviteMessageStore = defineStore("inviteMessage", {
       inviteMessages: [] as GameInviteMessage[],
       roomDetails: null as any,
    }),
-   getters: {},
+   getters: {
+      openInviteMessages(state): GameInviteMessage[] {
+         return state.inviteMessages.filter(invite => !invite.isClosed);
+      },
+   },
    actions: {
       socketEventHandler(
          msg: SocketGameInviteMessage | SocketRoomJoinedMessage,

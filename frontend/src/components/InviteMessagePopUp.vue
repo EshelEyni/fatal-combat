@@ -1,5 +1,9 @@
 <template>
-   <div class="invite-message" v-for="(invite, index) in openedInvites" :key="index">
+   <div
+      class="invite-message"
+      v-for="(invite, index) in inviteMessageStore.openInviteMessages"
+      :key="index"
+   >
       <p class="invite-title">"{{ invite.fromUserName }}" invited you to a game</p>
 
       <p class="invite-body">"{{ invite.message }}"</p>
@@ -15,7 +19,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
 import { useLoginWithToken } from "../composables/auth/useLoginWithToken";
 import { useInviteMessageStore } from "../store/invites";
 import { useWebSocketStore } from "../store/websocket";
@@ -25,14 +28,10 @@ const inviteMessageStore = useInviteMessageStore();
 const { loggedInUser } = useLoginWithToken();
 const webSocketStore = useWebSocketStore();
 
-const openedInvites = computed<GameInviteMessage[]>(() =>
-   inviteMessageStore.inviteMessages.filter(invite => !invite.isClosed),
-);
-
 const onAcceptInvite = (invite: any) => {
    webSocketStore.send({
       type: "accept_game_invite",
-      fromUserId: invite.from_user_id,
+      fromUserId: invite.fromUserId,
       toUserId: loggedInUser.value?.id,
    });
 };
