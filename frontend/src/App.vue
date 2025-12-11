@@ -57,6 +57,10 @@ watch([isConnected, loggedInUser], ([newConnectionStatus, newLoggedInUser]) => {
       0 0 8px rgba(243, 207, 96, 0.6);
 }
 
+.menu-btn:hover {
+   color: #e83b06 !important;
+}
+
 .menu-btn:focus-visible {
    transform: scale(0.95);
    outline: none !important;

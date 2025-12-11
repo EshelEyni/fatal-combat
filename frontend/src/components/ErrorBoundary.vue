@@ -6,14 +6,11 @@
 
          <div class="flex gap-2 flex-column mt-6">
             <Button
-               v-for="(btn, i) in buttons"
+               v-for="btn in buttons"
                :key="btn.key"
                :label="btn.label"
                class="text-2xl uppercase menu-btn"
-               :class="{ active: activeKey === btn.key }"
                @click="btn.action"
-               :ref="setItemRef(i)"
-               tabindex="0"
             />
          </div>
       </div>
@@ -24,12 +21,9 @@
 <script setup lang="ts">
 import { Button } from "primevue";
 import { ref, onErrorCaptured } from "vue";
-import { useKeyboardMenu } from "../composables/useKeyboardMenu";
 
 const hasError = ref(false);
 const errorMessage = ref("Unknown error");
-
-const { activeKey, setItemRef } = useKeyboardMenu(() => buttons);
 
 const buttons = [
    {

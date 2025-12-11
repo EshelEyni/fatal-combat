@@ -3,14 +3,11 @@
 
    <div class="flex flex-column align-items-center gap-3">
       <Button
-         v-for="(btn, i) in buttons"
+         v-for="btn in buttons"
          :key="btn.key"
          :label="btn.label"
          class="text-3xl uppercase menu-btn"
          @click="btn.action"
-         :class="{ active: activeKey === btn.key }"
-         :ref="setItemRef(i)"
-         tabindex="0"
       />
    </div>
 </template>
@@ -19,7 +16,6 @@ import { ref, computed } from "vue";
 import InviteMessagePopUp from "../../components/InviteMessagePopUp.vue";
 
 import { useLoginWithToken } from "../../composables/auth/useLoginWithToken";
-import { useKeyboardMenu } from "../../composables/useKeyboardMenu";
 import Button from "primevue/button";
 import { useRouter } from "vue-router";
 const { loggedInUser } = useLoginWithToken();
@@ -73,7 +69,5 @@ const buttons = computed(() => {
 
    return isMultiplayer.value ? multiplayerButtons : mainButtons;
 });
-
-const { activeKey, setItemRef } = useKeyboardMenu(() => buttons.value);
 </script>
 <style lang="scss" scoped></style>

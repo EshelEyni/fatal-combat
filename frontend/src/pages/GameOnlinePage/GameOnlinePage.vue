@@ -38,9 +38,8 @@ const roomDetails = computed(() => inviteMessageStore.roomDetails);
 const { onlineUsers } = storeToRefs(onlineUsersStore);
 const { loggedInUser } = useLoginWithToken();
 
-const onInviteToGame = (data: any) => {
-   if (!webSocketStore.connectionStatus) return;
-   if (!data.fromUserId || !data.toUserId) return;
+const onInviteToGame = (data: { fromUserId?: string; toUserId?: string }) => {
+   if (!webSocketStore.connectionStatus || !data.fromUserId || !data.toUserId) return;
    webSocketStore.send({
       type: "send_game_invite",
       fromUserId: data.fromUserId,
@@ -79,18 +78,18 @@ watch(gameCanvasComponent, () => {
    display: flex;
    align-items: center;
    justify-content: space-between;
-   color: #f1f1f1;
-   cursor: pointer;
    transition: 0.2s;
 }
 
-.user-item:hover {
+.user-item:hover,
+.user-item.active {
    border-color: #ff6a00;
    background: #222;
    box-shadow: 0 0 8px #ff6a00;
 }
 
 .user-name {
+   color: #f1f1f1;
    font-weight: 600;
    font-size: 1.05rem;
 }
@@ -101,7 +100,7 @@ watch(gameCanvasComponent, () => {
    padding: 0.3rem 0.7rem;
    border-radius: 6px;
    color: #fff;
-   font-size: 0.85rem;
+   font-size: 1.25rem;
    font-weight: bold;
    cursor: pointer;
    transition: 0.2s;

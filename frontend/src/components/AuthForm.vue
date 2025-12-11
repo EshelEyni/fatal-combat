@@ -7,21 +7,15 @@
          :type="field.type"
          :placeholder="field.placeholder"
          class="menu-input"
-         :class="{ active: activeKey === field.key }"
-         :ref="setItemRef(i)"
-         tabindex="0"
          :autofocus="i === 0"
       />
 
       <Button
-         v-for="(btn, i) in buttons"
+         v-for="btn in buttons"
          :key="btn.key"
          :label="btn.label"
          class="text-3xl uppercase menu-btn"
-         :class="{ active: activeKey === btn.key }"
          @click="btn.action"
-         :ref="setItemRef(formFields.length + i)"
-         tabindex="0"
       />
    </div>
 </template>
@@ -29,7 +23,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import Button from "primevue/button";
-import { useKeyboardMenu } from "../composables/useKeyboardMenu";
 
 const props = defineProps<{
    submitLabel: string;
@@ -62,6 +55,4 @@ const buttons = computed(() => [
    },
    { key: "back", label: "Back", action: props.onBack },
 ]);
-
-const { activeKey, setItemRef } = useKeyboardMenu(() => [...formFields, ...buttons.value]);
 </script>
