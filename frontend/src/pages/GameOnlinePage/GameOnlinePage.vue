@@ -1,14 +1,16 @@
 <template>
    <div v-if="!inviteMessageStore.roomDetails">
       <InviteMessagePopUp />
-      <ul>
-         <li
-            v-for="user in onlineUsers"
-            :key="user.id"
-            @click="onInviteToGame({ fromUserId: loggedInUser?.id, toUserId: user.id })"
-            class="hover:underline cursor-pointer"
-         >
-            {{ user.username }}
+      <ul class="user-list">
+         <li v-for="user in onlineUsers" :key="user.id" class="user-item">
+            <span class="user-name">{{ user.username }}</span>
+
+            <button
+               class="invite-btn"
+               @click="onInviteToGame({ fromUserId: loggedInUser?.id, toUserId: user.id })"
+            >
+               Invite
+            </button>
          </li>
       </ul>
    </div>
@@ -60,5 +62,53 @@ watch(gameCanvasComponent, () => {
 .game-wrapper {
    position: relative;
    display: inline-block;
+}
+
+.user-list {
+   list-style: none;
+   padding: 0;
+   margin-top: 1rem;
+}
+
+.user-item {
+   background: #1a1a1a;
+   border: 1px solid #333;
+   padding: 0.8rem 1rem;
+   margin-bottom: 0.6rem;
+   border-radius: 8px;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   color: #f1f1f1;
+   cursor: pointer;
+   transition: 0.2s;
+}
+
+.user-item:hover {
+   border-color: #ff6a00;
+   background: #222;
+   box-shadow: 0 0 8px #ff6a00;
+}
+
+.user-name {
+   font-weight: 600;
+   font-size: 1.05rem;
+}
+
+.invite-btn {
+   background: linear-gradient(90deg, #ff9800, #ff6a00);
+   border: none;
+   padding: 0.3rem 0.7rem;
+   border-radius: 6px;
+   color: #fff;
+   font-size: 0.85rem;
+   font-weight: bold;
+   cursor: pointer;
+   transition: 0.2s;
+}
+
+.invite-btn:hover {
+   transform: scale(1.05);
+   box-shadow: 0 0 6px #ff6a00;
 }
 </style>
