@@ -26,8 +26,8 @@ import { storeToRefs } from "pinia";
 import { useWebSocketStore } from "../../store/websocket";
 import { useLoginWithToken } from "../../composables/auth/useLoginWithToken";
 import { useInviteMessageStore } from "../../store/invites";
-import { useGameEngine } from "../../composables/gameEngine/useGameEngine/useGameEngine";
-import { GameMode } from "../../composables/gameEngine/useGameEngine/types/GameMode";
+import { useGameEngine } from "../../composables/useGameEngine/useGameEngine";
+import { GameMode } from "../../composables/useGameEngine/types/GameMode";
 import GameScreen from "../../components/GameScreen/GameScreen .vue";
 import InviteMessagePopUp from "../../components/InviteMessagePopUp.vue";
 

@@ -1,18 +1,18 @@
 import { onBeforeUnmount, reactive, ref, watch, type Ref } from "vue";
-import { Sprite } from "../../../classes/Sprite";
-import { canvasBackgroundConfig } from "../../../config/canvasBackground";
-import { shopCofnig } from "../../../config/shop";
-import { Fighter } from "../../../classes/Fighter";
-import { getPlayerConfig } from "../../../config/player";
-import { getEnemyConfig } from "../../../config/enemy";
-import { canvasConfig } from "../../../config/canvas";
+import { Sprite } from "../../classes/Sprite";
+import { canvasBackgroundConfig } from "../../config/canvasBackground";
+import { shopCofnig } from "../../config/shop";
+import { Fighter } from "../../classes/Fighter";
+import { getPlayerConfig } from "../../config/player";
+import { getEnemyConfig } from "../../config/enemy";
+import { canvasConfig } from "../../config/canvas";
 import type { KeyState } from "./types/KeyState";
 import { GameMode } from "./types/GameMode";
 import { handleAttackCollision } from "./utils/attack";
 import { handlePlayerMovement } from "./utils/movement";
 import { createAIDecisionEngine } from "./utils/createAIDecisionEngine";
-import { useWebSocketStore } from "../../../store/websocket";
-import type { RoomDetails } from "../../../type/roomDetails";
+import { useWebSocketStore } from "../../store/websocket";
+import type { RoomDetails } from "../../type/roomDetails";
 
 export function useGameEngine(
    gameMode: GameMode,
