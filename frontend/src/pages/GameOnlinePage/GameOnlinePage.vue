@@ -1,5 +1,5 @@
 <template>
-   <div v-if="!inviteMessageStore.roomDetails">
+   <div v-if="!inviteMessageStore.roomDetails" class="online-page">
       <InviteMessagePopUp />
       <ul class="user-list">
          <li v-for="user in onlineUsers" :key="user.id" class="user-item">
@@ -58,15 +58,17 @@ watch(gameCanvasComponent, () => {
 </script>
 
 <style scoped>
-.game-wrapper {
+.online-page {
    position: relative;
    display: inline-block;
+   width: 100%;
 }
 
 .user-list {
    list-style: none;
    padding: 0;
-   margin-top: 1rem;
+   margin: 2rem auto;
+   max-width: 500px;
 }
 
 .user-item {
