@@ -3,6 +3,8 @@ import type { GameInviteMessage } from "../type/inviteMessage";
 import type { ServerSocketMessage, SocketGameInviteMessage } from "../type/serverSocketMessage";
 import type { RoomDetails } from "../type/roomDetails";
 
+const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
+
 export const useInviteMessageStore = defineStore("inviteMessage", {
    state: () => ({
       inviteMessages: [] as GameInviteMessage[],
@@ -39,8 +41,9 @@ export const useInviteMessageStore = defineStore("inviteMessage", {
             receivedAt: Date.now(),
             isClosed: false,
          };
-
-         this.inviteMessages.push(formattedInvite);
+         const map = new Map(this.inviteMessages.map(inv => [inv.fromUserId, inv]));
+         map.set(formattedInvite.fromUserId, formattedInvite);
+         this.inviteMessages = Array.from(map.values());
       },
       removeInviteMessage(invite: GameInviteMessage) {
          this.inviteMessages = this.inviteMessages.filter(
@@ -54,6 +57,18 @@ export const useInviteMessageStore = defineStore("inviteMessage", {
             }
             return inv;
          });
+      },
+      markAllInviteMessagesAsClosed() {
+         this.inviteMessages = this.inviteMessages.map(inv => ({
+            ...inv,
+            isClosed: true,
+         }));
+      },
+      removeOldInviteMessages() {
+         const now = Date.now();
+         this.inviteMessages = this.inviteMessages.filter(
+            inv => now - inv.receivedAt <= FIFTEEN_MINUTES_MS,
+         );
       },
    },
 });

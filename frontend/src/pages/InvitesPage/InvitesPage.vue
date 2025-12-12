@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import InviteCard from "./components/InviteCard.vue";
 import { useInviteMessageStore } from "../../store/invites";
 import { useWebSocketStore } from "../../store/websocket";
@@ -61,6 +61,10 @@ const onAcceptInvite = (invite: any) => {
 const onCloseInvite = (invite: any) => {
    inviteMessageStore.closeInviteMessage(invite);
 };
+
+onMounted(() => {
+   inviteMessageStore.markAllInviteMessagesAsClosed();
+});
 </script>
 
 <style scoped>

@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onBeforeMount } from "vue";
 import Button from "primevue/button";
 import { useRouter } from "vue-router";
 import { useLoginWithToken } from "../../composables/auth/useLoginWithToken";
@@ -59,4 +59,8 @@ const onNavigate = (path: string) => {
 const onLogout = () => {
    logout();
 };
+
+onBeforeMount(() => {
+   inviteMessageStore.removeOldInviteMessages();
+});
 </script>
