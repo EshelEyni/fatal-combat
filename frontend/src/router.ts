@@ -26,6 +26,11 @@ const routes = [
       component: () => import("./pages/LoginPage/LoginPage.vue"),
    },
    {
+      path: "/invites",
+      component: () => import("./pages/InvitesPage/InvitesPage.vue"),
+      meta: { requiresAuth: true },
+   },
+   {
       path: "/signup",
       component: () => import("./pages/SignupPage/SignupPage.vue"),
    },

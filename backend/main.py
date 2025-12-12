@@ -7,7 +7,7 @@ from sockets.router import ws_endpoint
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost"],
+    allow_origins=["http://localhost:5173", "http://localhost"],
     allow_credentials=True,
     allow_methods=["*"],  # allow all methods
     allow_headers=["*"],  # allow all headers

@@ -20,13 +20,17 @@ import { useLoginWithToken } from "../../composables/auth/useLoginWithToken";
 import { useLogout } from "../../composables/auth/useLogout";
 import InviteMessagePopUp from "../../components/InviteMessagePopUp.vue";
 import Loader from "../../components/Loader.vue";
+import { useInviteMessageStore } from "../../store/invites";
 
 const router = useRouter();
 const { loggedInUser, isLoadingLoggedInUser } = useLoginWithToken();
 const { logout } = useLogout();
 const isLoggedIn = computed(() => !!loggedInUser.value);
+const inviteMessageStore = useInviteMessageStore();
 
 const buttons = computed(() => {
+   const playButton = { key: "play", label: "Play", action: () => onNavigate("/game-mode") };
+
    const authButtons = isLoggedIn.value
       ? [{ key: "logout", label: "Logout", action: onLogout }]
       : [
@@ -34,11 +38,18 @@ const buttons = computed(() => {
            { key: "login", label: "Login", action: () => onNavigate("/login") },
         ];
 
-   return [
-      { key: "play", label: "Play", action: () => onNavigate("/game-mode") },
-      ...authButtons,
-      { key: "about", label: "About", action: () => onNavigate("/about") },
-   ];
+   const inviteButton = {
+      key: "invites",
+      label: inviteMessageStore.openedInviteMessagesCount
+         ? `Invites (${inviteMessageStore.openedInviteMessagesCount})`
+         : "Invites",
+      action: () => onNavigate("/invites"),
+   };
+
+   const aboutButton = { key: "about", label: "About", action: () => onNavigate("/about") };
+
+   if (isLoggedIn.value) return [playButton, inviteButton, ...authButtons, aboutButton];
+   return [playButton, ...authButtons, aboutButton];
 });
 
 const onNavigate = (path: string) => {

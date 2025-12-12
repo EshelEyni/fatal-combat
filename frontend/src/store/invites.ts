@@ -12,6 +12,9 @@ export const useInviteMessageStore = defineStore("inviteMessage", {
       openInviteMessages(state): GameInviteMessage[] {
          return state.inviteMessages.filter(invite => !invite.isClosed);
       },
+      openedInviteMessagesCount(state): number {
+         return state.inviteMessages.filter(invite => !invite.isClosed).length;
+      },
    },
    actions: {
       socketEventHandler(msg: ServerSocketMessage, loggedInUserId?: string) {
