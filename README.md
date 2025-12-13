@@ -16,6 +16,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-Screenhots
+## Screenhots
+
 ![Gameplay Screenshot](./screenshots/gameplay.png)
 ![Room Invite Screenshot](./screenshots/homepage.png)
