@@ -36,7 +36,10 @@ const onClickTitle = () => {
 
 watch([isConnected, loggedInUser], ([newConnectionStatus, newLoggedInUser]) => {
    if (!newConnectionStatus || !newLoggedInUser) return;
-   webSocketStore.joinLobby(newLoggedInUser);
+   webSocketStore.send({
+      type: "join_lobby",
+      userId: newLoggedInUser.id,
+   });
 });
 </script>
 

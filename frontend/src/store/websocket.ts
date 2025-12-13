@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import type { User } from "../type/user";
 import type { ServerSocketMessage } from "../type/serverSocketMessage";
 import type { ClientSocketMessage } from "../type/clientServerSocketMessage";
 import { getBaseServerUrl } from "../services/utils/getBaseServerUrl";
@@ -41,19 +40,8 @@ export const useWebSocketStore = defineStore("websocket", {
       },
 
       send(data: ClientSocketMessage) {
-         if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
+         if (!this.socket || !this.isConnected) return;
          this.socket.send(JSON.stringify(data));
-      },
-
-      joinLobby(user: User) {
-         if (!this.isConnected) return;
-
-         const stringifedMsg = JSON.stringify({
-            type: "join_lobby",
-            user,
-         });
-
-         this.socket!.send(stringifedMsg);
       },
 
       disconnect() {

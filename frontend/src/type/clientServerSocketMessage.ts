@@ -1,3 +1,8 @@
+export interface SocketJoinLobbyMessage {
+   type: "join_lobby";
+   userId: string;
+}
+
 export interface SocketAcceptGameInviteMessage {
    type: "accept_game_invite";
    fromUserId: string;
@@ -19,6 +24,7 @@ export interface SocketSendGameInviteMessage {
 }
 
 export type ClientSocketMessage =
+   | SocketJoinLobbyMessage
    | SocketAcceptGameInviteMessage
    | SocketKeyEventMessage
    | SocketSendGameInviteMessage;
