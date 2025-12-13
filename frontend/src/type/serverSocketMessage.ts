@@ -12,6 +12,8 @@ export interface SocketRoomJoinedMessage {
    room_id: string;
    you_are: "player_1" | "player_2";
    opponent: string;
+   accepter_id: string;
+   inviter_id: string;
 }
 
 export interface SocketLobbyUsersMessage {

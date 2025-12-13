@@ -25,8 +25,14 @@ export interface SocketSendGameInviteMessage {
    toUserId: string;
 }
 
+export interface SocketLeaveRoomMessage {
+   type: "leave_room";
+   userId: string;
+}
+
 export type ClientSocketMessage =
    | SocketJoinLobbyMessage
    | SocketAcceptGameInviteMessage
    | SocketKeyEventMessage
-   | SocketSendGameInviteMessage;
+   | SocketSendGameInviteMessage
+   | SocketLeaveRoomMessage;

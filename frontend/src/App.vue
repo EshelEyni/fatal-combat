@@ -26,6 +26,8 @@ const { isConnected } = storeToRefs(webSocketStore);
 const { loggedInUser } = useLoginWithToken();
 
 webSocketStore.connect((msg: ServerSocketMessage) => {
+   console.log(msg);
+   
    onlineUsersStore.socketEventHandler(msg);
    inviteMessageStore.socketEventHandler(msg, loggedInUser.value?.id);
 });

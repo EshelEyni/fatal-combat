@@ -39,7 +39,7 @@ const onAcceptInvite = (invite: GameInviteMessage) => {
    });
 
    router.push("/game-online");
-   inviteMessageStore.removeInviteMessage(invite);
+   inviteMessageStore.removeInviteMessage(invite.fromUserId);
 };
 
 const onCloseInvite = (invite: GameInviteMessage) => {
@@ -47,7 +47,7 @@ const onCloseInvite = (invite: GameInviteMessage) => {
 };
 
 const onRemoveInvite = (invite: GameInviteMessage) => {
-   inviteMessageStore.removeInviteMessage(invite);
+   inviteMessageStore.removeInviteMessage(invite.fromUserId);
 };
 </script>
 <style scoped>

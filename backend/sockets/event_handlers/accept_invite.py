@@ -25,6 +25,8 @@ async def accept_invite(websocket, data):
             "room_id": room_id,
             "you_are": "player_1",
             "opponent": accepter["user"]["username"],
+            "inviter_id": inviter_id,
+            "accepter_id": accepter_id,
         },
     )
 
@@ -35,6 +37,8 @@ async def accept_invite(websocket, data):
             "room_id": room_id,
             "you_are": "player_2",
             "opponent": inviter["user"]["username"],
+            "inviter_id": inviter_id,
+            "accepter_id": accepter_id,
         },
     )
 

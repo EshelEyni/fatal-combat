@@ -25,11 +25,15 @@ export const useInviteMessageStore = defineStore("inviteMessage", {
          }
          if (msg.type === "room_joined") {
             if (!loggedInUserId) return;
+            console.log(msg);
+            
             this.roomDetails = {
                roomId: msg.room_id,
                fighter: msg.you_are,
                opponentName: msg.opponent,
                userId: loggedInUserId,
+               accepterId: msg.accepter_id,
+               inviterId: msg.inviter_id,
             };
          }
       },
@@ -45,9 +49,9 @@ export const useInviteMessageStore = defineStore("inviteMessage", {
          map.set(formattedInvite.fromUserId, formattedInvite);
          this.inviteMessages = Array.from(map.values());
       },
-      removeInviteMessage(invite: GameInviteMessage) {
+      removeInviteMessage(inviteFromUserId: string) {
          this.inviteMessages = this.inviteMessages.filter(
-            inv => inv.fromUserId !== invite.fromUserId,
+            inv => inv.fromUserId !== inviteFromUserId,
          );
       },
       closeInviteMessage(invite: GameInviteMessage) {

@@ -37,6 +37,7 @@ const inviteMessageStore = useInviteMessageStore();
 const { roomDetails } = storeToRefs(inviteMessageStore);
 const { onlineUsers } = storeToRefs(onlineUsersStore);
 const { loggedInUser } = useLoginWithToken();
+console.log({roomDetails});
 
 const onInviteToGame = (data: { fromUserId?: string; toUserId?: string }) => {
    if (!webSocketStore.connectionStatus || !data.fromUserId || !data.toUserId) return;
@@ -57,7 +58,14 @@ watch(gameCanvasComponent, () => {
 });
 
 onUnmounted(() => {
+   if (!roomDetails.value) return;
+   inviteMessageStore.removeInviteMessage(roomDetails.value.inviterId.toString());
    inviteMessageStore.clearRoomDetails();
+   if (!loggedInUser.value) return;
+   webSocketStore.send({
+      type: "leave_room",
+      userId: loggedInUser.value.id,
+   });
 });
 </script>
 
