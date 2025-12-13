@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 import type { ServerSocketMessage } from "../type/serverSocketMessage";
-import type { ClientSocketMessage } from "../type/clientServerSocketMessage";
+import type { ClientSocketMessage } from "../schemas/socketMessages/clientSocketMessages";
 import { getBaseServerUrl } from "../services/utils/getBaseServerUrl";
+import { ClientSocketMessageSchema } from "../schemas/socketMessages/clientSocketMessages";
 
 const SOCKET_SERVER_URL = getBaseServerUrl("websocket");
 
@@ -41,12 +42,14 @@ export const useWebSocketStore = defineStore("websocket", {
             messageHandler(msg);
          };
       },
-
       send(data: ClientSocketMessage) {
-         if (!this.socket || !this.isConnected) return;
-         this.socket.send(JSON.stringify(data));
-      },
+         if (!this.socket || !this.isConnected) return console.error("WebSocket is not connected.");
 
+         const result = ClientSocketMessageSchema.safeParse(data);
+         if (!result.success) return console.error("Invalid outgoing WS message:", result.error);
+
+         this.socket.send(JSON.stringify(result.data));
+      },
       disconnect() {
          this.socket?.close();
          this.socket = null;

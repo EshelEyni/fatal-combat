@@ -1,0 +1,42 @@
+import { z } from "zod";
+import { UserSchema } from "../user";
+
+const SocketJoinLobbyMessageSchema = z.object({
+   type: z.literal("join_lobby"),
+   user: UserSchema,
+});
+
+const SocketAcceptGameInviteMessageSchema = z.object({
+   type: z.literal("accept_game_invite"),
+   fromUserId: z.string(),
+   toUserId: z.string(),
+});
+
+const SocketKeyEventMessageSchema = z.object({
+   type: z.literal("key_event"),
+   key: z.string(),
+   room_id: z.string(),
+   user_id: z.string(),
+   pressed: z.boolean(),
+});
+
+const SocketSendGameInviteMessageSchema = z.object({
+   type: z.literal("send_game_invite"),
+   fromUserId: z.string(),
+   toUserId: z.string(),
+});
+
+const SocketLeaveRoomMessageSchema = z.object({
+   type: z.literal("leave_room"),
+   userId: z.string(),
+});
+
+export const ClientSocketMessageSchema = z.union([
+   SocketJoinLobbyMessageSchema,
+   SocketAcceptGameInviteMessageSchema,
+   SocketKeyEventMessageSchema,
+   SocketSendGameInviteMessageSchema,
+   SocketLeaveRoomMessageSchema,
+]);
+
+export type ClientSocketMessage = z.infer<typeof ClientSocketMessageSchema>;
