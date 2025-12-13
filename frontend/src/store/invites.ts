@@ -1,7 +1,10 @@
 import { defineStore } from "pinia";
-import type { GameInviteMessage } from "../type/inviteMessage";
-import type { ServerSocketMessage, SocketGameInviteMessage } from "../type/serverSocketMessage";
-import type { RoomDetails } from "../type/roomDetails";
+import type { GameInviteMessage } from "../schemas/inviteMessage";
+import type {
+   ServerSocketMessage,
+   SocketGameInviteMessage,
+} from "../schemas/socketMessages/serverSocketMessages";
+import type { RoomDetails } from "../schemas/roomDetails";
 
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
 
@@ -19,7 +22,7 @@ export const useInviteMessageStore = defineStore("inviteMessage", {
       },
    },
    actions: {
-      socketEventHandler(msg: ServerSocketMessage, loggedInUserId?: string) {
+      socketEventHandler(msg: ServerSocketMessage, loggedInUserId?: number) {
          if (msg.type === "game_invite") {
             this.addInviteMessage(msg);
          }
@@ -48,7 +51,7 @@ export const useInviteMessageStore = defineStore("inviteMessage", {
          map.set(formattedInvite.fromUserId, formattedInvite);
          this.inviteMessages = Array.from(map.values());
       },
-      removeInviteMessage(inviteFromUserId: string) {
+      removeInviteMessage(inviteFromUserId: number) {
          this.inviteMessages = this.inviteMessages.filter(
             inv => inv.fromUserId !== inviteFromUserId,
          );

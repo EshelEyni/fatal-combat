@@ -16,7 +16,7 @@ import { useWebSocketStore } from "./store/websocket";
 import { storeToRefs } from "pinia";
 import { useInviteMessageStore } from "./store/invites";
 import { useRouter } from "vue-router";
-import type { ServerSocketMessage } from "./type/serverSocketMessage";
+import type { ServerSocketMessage } from "./schemas/socketMessages/serverSocketMessages";
 
 const router = useRouter();
 const onlineUsersStore = useOnlineUsersStore();

@@ -37,9 +37,9 @@ const inviteMessageStore = useInviteMessageStore();
 const { roomDetails } = storeToRefs(inviteMessageStore);
 const { onlineUsers } = storeToRefs(onlineUsersStore);
 const { loggedInUser } = useLoginWithToken();
-console.log({roomDetails});
+console.log({ roomDetails });
 
-const onInviteToGame = (data: { fromUserId?: string; toUserId?: string }) => {
+const onInviteToGame = (data: { fromUserId?: number; toUserId?: number }) => {
    if (!webSocketStore.connectionStatus || !data.fromUserId || !data.toUserId) return;
    webSocketStore.send({
       type: "send_game_invite",
@@ -59,7 +59,7 @@ watch(gameCanvasComponent, () => {
 
 onUnmounted(() => {
    if (!roomDetails.value) return;
-   inviteMessageStore.removeInviteMessage(roomDetails.value.inviterId.toString());
+   inviteMessageStore.removeInviteMessage(roomDetails.value.inviterId);
    inviteMessageStore.clearRoomDetails();
    if (!loggedInUser.value) return;
    webSocketStore.send({

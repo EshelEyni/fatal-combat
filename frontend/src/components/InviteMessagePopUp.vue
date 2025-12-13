@@ -23,7 +23,7 @@ import { useRouter } from "vue-router";
 import { useLoginWithToken } from "../composables/auth/useLoginWithToken";
 import { useInviteMessageStore } from "../store/invites";
 import { useWebSocketStore } from "../store/websocket";
-import type { GameInviteMessage } from "../type/inviteMessage";
+import type { GameInviteMessage } from "../schemas/inviteMessage";
 
 const router = useRouter();
 const inviteMessageStore = useInviteMessageStore();

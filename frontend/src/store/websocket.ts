@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { ServerSocketMessage } from "../type/serverSocketMessage";
+import type { ServerSocketMessage } from "../schemas/socketMessages/serverSocketMessages";
 import type { ClientSocketMessage } from "../schemas/socketMessages/clientSocketMessages";
 import { getBaseServerUrl } from "../services/utils/getBaseServerUrl";
 import { ClientSocketMessageSchema } from "../schemas/socketMessages/clientSocketMessages";

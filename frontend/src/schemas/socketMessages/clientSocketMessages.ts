@@ -8,27 +8,27 @@ const SocketJoinLobbyMessageSchema = z.object({
 
 const SocketAcceptGameInviteMessageSchema = z.object({
    type: z.literal("accept_game_invite"),
-   fromUserId: z.string(),
-   toUserId: z.string(),
+   fromUserId: z.number(),
+   toUserId: z.number(),
 });
 
 const SocketKeyEventMessageSchema = z.object({
    type: z.literal("key_event"),
    key: z.string(),
-   room_id: z.string(),
-   user_id: z.string(),
+   room_id: z.number(),
+   user_id: z.number(),
    pressed: z.boolean(),
 });
 
 const SocketSendGameInviteMessageSchema = z.object({
    type: z.literal("send_game_invite"),
-   fromUserId: z.string(),
-   toUserId: z.string(),
+   fromUserId: z.number(),
+   toUserId: z.number(),
 });
 
 const SocketLeaveRoomMessageSchema = z.object({
    type: z.literal("leave_room"),
-   userId: z.string(),
+   userId: z.number(),
 });
 
 export const ClientSocketMessageSchema = z.union([

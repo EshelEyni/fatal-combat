@@ -12,7 +12,7 @@ import { handleAttackCollision } from "./utils/attack";
 import { handlePlayerMovement } from "./utils/movement";
 import { createAIDecisionEngine } from "./utils/createAIDecisionEngine";
 import { useWebSocketStore } from "../../store/websocket";
-import type { RoomDetails } from "../../type/roomDetails";
+import type { RoomDetails } from "../../schemas/roomDetails";
 
 export function useGameEngine(
    gameMode: GameMode,

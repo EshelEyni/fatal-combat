@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import type { User } from "../schemas/user";
-import type { ServerSocketMessage } from "../type/serverSocketMessage";
+import type { ServerSocketMessage } from "../schemas/socketMessages/serverSocketMessages";
 
 export const useOnlineUsersStore = defineStore("onlineUsers", {
    state: () => ({
