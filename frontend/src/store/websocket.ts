@@ -2,6 +2,9 @@ import { defineStore } from "pinia";
 import type { User } from "../type/user";
 import type { ServerSocketMessage } from "../type/serverSocketMessage";
 import type { ClientSocketMessage } from "../type/clientServerSocketMessage";
+import { getBaseServerUrl } from "../services/utils/getBaseServerUrl";
+
+const SOCKET_SERVER_URL = getBaseServerUrl("websocket");
 
 export const useWebSocketStore = defineStore("websocket", {
    state: () => ({
@@ -17,7 +20,7 @@ export const useWebSocketStore = defineStore("websocket", {
       connect(messageHandler: (msg: ServerSocketMessage) => void) {
          if (this.socket) return;
 
-         this.socket = new WebSocket("ws://localhost:8000/ws");
+         this.socket = new WebSocket(SOCKET_SERVER_URL);
 
          this.socket.onopen = () => {
             this.isConnected = true;

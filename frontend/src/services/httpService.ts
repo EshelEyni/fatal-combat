@@ -1,6 +1,7 @@
 import Axios, { type Method } from "axios";
+import { getBaseServerUrl } from "./utils/getBaseServerUrl";
 
-const BASE_URL = import.meta.env.PROD ? "/api/" : "http://localhost:8000/api/";
+const BASE_URL = getBaseServerUrl("api");
 
 const axios = Axios.create({
    withCredentials: true,
