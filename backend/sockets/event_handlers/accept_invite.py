@@ -14,12 +14,10 @@ async def accept_invite(websocket, data):
 
     room_id = f"room-{uuid4().hex[:8]}"
 
-    # Create room
     active_rooms[room_id] = {
         "players": {inviter_id: inviter_ws, accepter_id: accepter_ws}
     }
 
-    # Inform the players they entered the room
     await send_to(
         inviter_ws,
         {
