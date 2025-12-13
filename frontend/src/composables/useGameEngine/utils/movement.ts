@@ -1,4 +1,4 @@
-import type { Fighter } from "../../../../classes/Fighter";
+import type { Fighter } from "../../../classes/Fighter";
 
 type KeyState = { pressed: boolean; keyCode: string };
 

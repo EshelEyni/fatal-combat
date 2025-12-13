@@ -1,4 +1,4 @@
-import type { Fighter } from "../../../../classes/Fighter";
+import type { Fighter } from "../../../classes/Fighter";
 
 interface AttackBox {
    position: { x: number; y: number };

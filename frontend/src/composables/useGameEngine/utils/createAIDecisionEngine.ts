@@ -1,4 +1,4 @@
-import type { Fighter } from "../../../../classes/Fighter";
+import type { Fighter } from "../../../classes/Fighter";
 import { isHitDetected } from "./attack";
 
 // const jumpChance = 0.75;

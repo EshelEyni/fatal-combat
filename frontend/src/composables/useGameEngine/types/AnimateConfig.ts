@@ -1,5 +1,5 @@
-import type { Fighter } from "../../../../classes/Fighter";
-import type { Sprite } from "../../../../classes/Sprite";
+import type { Fighter } from "../../../classes/Fighter";
+import type { Sprite } from "../../../classes/Sprite";
 import type { KeyState } from "./KeyState";
 
 export type AnimateConfig = {
