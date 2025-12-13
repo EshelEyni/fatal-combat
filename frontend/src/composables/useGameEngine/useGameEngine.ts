@@ -1,4 +1,4 @@
-import { onBeforeUnmount, reactive, ref, watch, type Ref } from "vue";
+import { onBeforeUnmount, onMounted, reactive, ref, watch, type Ref } from "vue";
 import { Sprite } from "../../classes/Sprite";
 import { canvasBackgroundConfig } from "../../config/canvasBackground";
 import { shopCofnig } from "../../config/shop";
@@ -42,6 +42,86 @@ export function useGameEngine(
    });
 
    const animate = ({ canvas }: { canvas: HTMLCanvasElement }) => {
+      const handleMovements = () => {
+         if (gameMode === GameMode.ONLINE_MULTIPLAYER) {
+            handlePlayerMovement(player_1, {
+               left: {
+                  pressed: keysState.a.pressed,
+                  keyCode: "KeyA",
+               },
+               right: {
+                  pressed: keysState.d.pressed,
+                  keyCode: "KeyD",
+               },
+            });
+
+            handlePlayerMovement(player_2, {
+               left: {
+                  pressed: keysState.ArrowLeft.pressed,
+                  keyCode: "ArrowLeft",
+               },
+               right: {
+                  pressed: keysState.ArrowRight.pressed,
+                  keyCode: "ArrowRight",
+               },
+            });
+         }
+
+         if (gameMode === GameMode.LOCAL_MULTIPLAYER) {
+            handlePlayerMovement(player_1, {
+               left: {
+                  pressed: keysState.a.pressed,
+                  keyCode: "KeyA",
+               },
+               right: {
+                  pressed: keysState.d.pressed,
+                  keyCode: "KeyD",
+               },
+            });
+
+            handlePlayerMovement(player_2, {
+               left: {
+                  pressed: keysState.ArrowLeft.pressed,
+                  keyCode: "ArrowLeft",
+               },
+               right: {
+                  pressed: keysState.ArrowRight.pressed,
+                  keyCode: "ArrowRight",
+               },
+            });
+         }
+
+         if (gameMode === GameMode.SINGLE_PLAYER) {
+            handlePlayerMovement(player_1, {
+               left: {
+                  pressed: keysState.a.pressed,
+                  keyCode: "KeyA",
+               },
+               right: {
+                  pressed: keysState.d.pressed,
+                  keyCode: "KeyD",
+               },
+            });
+
+            frame++;
+            update(frame);
+         }
+      };
+
+      const handleAttacks = () => {
+         handleAttackCollision({
+            attacker: player_1,
+            defender: player_2,
+            hitFrame: 4,
+         });
+
+         handleAttackCollision({
+            attacker: player_2,
+            defender: player_1,
+            hitFrame: 2,
+         });
+      };
+
       const canvasContext = canvas.getContext("2d")!;
 
       animationId = requestAnimationFrame(() => animate({ canvas }));
@@ -51,138 +131,63 @@ export function useGameEngine(
       player_1.update(canvasContext);
       player_2.update(canvasContext);
 
-      if (gameMode === GameMode.ONLINE_MULTIPLAYER) {
-         handlePlayerMovement(player_1, {
-            left: {
-               pressed: keysState.a.pressed,
-               keyCode: "KeyA",
-            },
-            right: {
-               pressed: keysState.d.pressed,
-               keyCode: "KeyD",
-            },
-         });
-         handlePlayerMovement(player_2, {
-            left: {
-               pressed: keysState.ArrowLeft.pressed,
-               keyCode: "ArrowLeft",
-            },
-            right: {
-               pressed: keysState.ArrowRight.pressed,
-               keyCode: "ArrowRight",
-            },
-         });
-      }
-
-      if (gameMode !== GameMode.ONLINE_MULTIPLAYER) {
-         handlePlayerMovement(player_1, {
-            left: {
-               pressed: keysState.a.pressed,
-               keyCode: "KeyA",
-            },
-            right: {
-               pressed: keysState.d.pressed,
-               keyCode: "KeyD",
-            },
-         });
-      }
-
-      if (gameMode === GameMode.LOCAL_MULTIPLAYER) {
-         handlePlayerMovement(player_2, {
-            left: {
-               pressed: keysState.ArrowLeft.pressed,
-               keyCode: "ArrowLeft",
-            },
-            right: {
-               pressed: keysState.ArrowRight.pressed,
-               keyCode: "ArrowRight",
-            },
-         });
-      } else if (gameMode === GameMode.SINGLE_PLAYER) {
-         frame++;
-         update(frame);
-      }
-
-      // attacks
-      handleAttackCollision({
-         attacker: player_1,
-         defender: player_2,
-         hitFrame: 4,
-      });
-
-      handleAttackCollision({
-         attacker: player_2,
-         defender: player_1,
-         hitFrame: 2,
-      });
+      handleMovements();
+      handleAttacks();
    };
 
-   const onKeyDown = (event: KeyboardEvent) => {
-      const disablePlayer1 =
-         gameMode === GameMode.ONLINE_MULTIPLAYER &&
-         roomDetails?.value &&
-         roomDetails.value.fighter === "player_2";
-      const disablePlayer2 =
-         gameMode === GameMode.ONLINE_MULTIPLAYER &&
-         roomDetails?.value &&
-         roomDetails.value.fighter === "player_1";
+   const isKeyDisabled = (code: string): boolean => {
+      if (gameMode !== GameMode.ONLINE_MULTIPLAYER) return false;
+      if (!roomDetails?.value) return false;
+
+      const { fighter } = roomDetails.value;
 
       const player1Keys = ["KeyA", "KeyD", "KeyW", "KeyS", "Space"];
       const player2Keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter"];
 
-      if (disablePlayer1 && player1Keys.includes(event.code)) return;
-      if (disablePlayer2 && player2Keys.includes(event.code)) return;
+      if (fighter === "player_2" && player1Keys.includes(code)) return true;
+      if (fighter === "player_1" && player2Keys.includes(code)) return true;
+
+      return false;
+   };
+
+   const onKeyDown = (event: KeyboardEvent) => {
+      const disabled = isKeyDisabled(event.code);
+      if (disabled) return;
 
       handleKeyDownEvent(event.code);
 
-      if (gameMode === GameMode.ONLINE_MULTIPLAYER) {
-         if (
-            (roomDetails?.value &&
-               roomDetails.value.fighter === "player_1" &&
-               player1Keys.includes(event.code)) ||
-            (roomDetails?.value &&
-               roomDetails.value.fighter === "player_2" &&
-               player2Keys.includes(event.code))
-         ) {
-            webSocketStore.send({
-               type: "key_event",
-               key: event.code,
-               room_id: roomDetails.value.roomId,
-               user_id: roomDetails.value.userId,
-               pressed: true,
-            });
-         }
-      }
+      if (!roomDetails?.value) return;
+
+      webSocketStore.send({
+         type: "key_event",
+         key: event.code,
+         room_id: roomDetails.value.roomId,
+         user_id: roomDetails.value.userId,
+         pressed: true,
+      });
    };
 
    const onKeyUp = (event: KeyboardEvent) => {
+      const disabled = isKeyDisabled(event.code);
+      if (disabled) return;
+
       handleKeyUpEvent(event.code);
 
-      if (gameMode === GameMode.ONLINE_MULTIPLAYER) {
-         const player1Keys = ["KeyA", "KeyD", "KeyW", "KeyS", "Space"];
-         const player2Keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter"];
+      if (!roomDetails?.value) return;
 
-         if (
-            (roomDetails?.value &&
-               roomDetails.value.fighter === "player_1" &&
-               player1Keys.includes(event.code)) ||
-            (roomDetails?.value &&
-               roomDetails.value.fighter === "player_2" &&
-               player2Keys.includes(event.code))
-         ) {
-            webSocketStore.send({
-               type: "key_event",
-               key: event.code,
-               room_id: roomDetails.value.roomId,
-               user_id: roomDetails.value.userId,
-               pressed: false,
-            });
-         }
-      }
+      webSocketStore.send({
+         type: "key_event",
+         key: event.code,
+         room_id: roomDetails.value.roomId,
+         user_id: roomDetails.value.userId,
+         pressed: false,
+      });
    };
 
    const handleKeyDownEvent = (keyCode: string) => {
-      if (!player_1.dead) {
+      const handlePlayer1KeyDownEvent = (keyCode: string) => {
+         if (player_1.dead) return;
+
          switch (keyCode) {
             case "KeyD":
                keysState.d.pressed = true;
@@ -202,9 +207,11 @@ export function useGameEngine(
                player_1.attack();
                break;
          }
-      }
+      };
 
-      if (!player_2.dead) {
+      const handlePlayer2KeyDownEvent = (keyCode: string) => {
+         if (player_2.dead) return;
+
          switch (keyCode) {
             case "ArrowRight":
                keysState.ArrowRight.pressed = true;
@@ -225,42 +232,49 @@ export function useGameEngine(
 
                break;
          }
-      }
+      };
+
+      handlePlayer1KeyDownEvent(keyCode);
+      handlePlayer2KeyDownEvent(keyCode);
    };
 
    const handleKeyUpEvent = (keyCode: string) => {
-      switch (keyCode) {
-         case "KeyD":
-            keysState.d.pressed = false;
-            break;
-         case "KeyA":
-            keysState.a.pressed = false;
-            break;
-      }
+      const handlePlayer1KeyUpEvent = (keyCode: string) => {
+         switch (keyCode) {
+            case "KeyD":
+               keysState.d.pressed = false;
+               break;
+            case "KeyA":
+               keysState.a.pressed = false;
+               break;
+         }
+      };
 
-      // enemy keys
-      switch (keyCode) {
-         case "ArrowRight":
-            keysState.ArrowRight.pressed = false;
-            break;
-         case "ArrowLeft":
-            keysState.ArrowLeft.pressed = false;
-            break;
-      }
+      const handlePlayer2KeyUpEvent = (keyCode: string) => {
+         switch (keyCode) {
+            case "ArrowRight":
+               keysState.ArrowRight.pressed = false;
+               break;
+            case "ArrowLeft":
+               keysState.ArrowLeft.pressed = false;
+               break;
+         }
+      };
+
+      handlePlayer1KeyUpEvent(keyCode);
+      handlePlayer2KeyUpEvent(keyCode);
    };
 
-   if (gameMode === GameMode.ONLINE_MULTIPLAYER) {
-      webSocketStore.socket?.addEventListener("message", event => {
-         const msg = JSON.parse(event.data);
-         if (msg.type === "opponent_key_event") {
-            if (msg.pressed) {
-               handleKeyDownEvent(msg.key);
-            } else {
-               handleKeyUpEvent(msg.key);
-            }
+   const handleSocketKeyEventMessage = (event: MessageEvent<any>) => {
+      const msg = JSON.parse(event.data);
+      if (msg.type === "opponent_key_event") {
+         if (msg.pressed) {
+            handleKeyDownEvent(msg.key);
+         } else {
+            handleKeyUpEvent(msg.key);
          }
-      });
-   }
+      }
+   };
 
    watch(canvasEl, canvas => {
       if (!canvas) return;
@@ -272,10 +286,24 @@ export function useGameEngine(
       window.addEventListener("keyup", onKeyUp);
    });
 
+   onMounted(() => {
+      if (gameMode !== GameMode.ONLINE_MULTIPLAYER) return;
+
+      webSocketStore.socket?.addEventListener("message", event => {
+         handleSocketKeyEventMessage(event);
+      });
+   });
+
    onBeforeUnmount(() => {
       cancelAnimationFrame(animationId);
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);
+
+      if (gameMode !== GameMode.ONLINE_MULTIPLAYER) return;
+
+      webSocketStore.socket?.removeEventListener("message", event => {
+         handleSocketKeyEventMessage(event);
+      });
    });
 
    return { canvasEl, background, shop, player_1, player_2, keysState };
