@@ -32,7 +32,6 @@ const webSocketStore = useWebSocketStore();
 
 const onAcceptInvite = (invite: GameInviteMessage) => {
    if (!loggedInUser.value) return;
-
    webSocketStore.send({
       type: "accept_game_invite",
       fromUserId: invite.fromUserId,
@@ -40,6 +39,7 @@ const onAcceptInvite = (invite: GameInviteMessage) => {
    });
 
    router.push("/game-online");
+   inviteMessageStore.removeInviteMessage(invite);
 };
 
 const onCloseInvite = (invite: GameInviteMessage) => {
