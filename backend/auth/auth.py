@@ -1,6 +1,5 @@
 # auth.py
 from fastapi import APIRouter, Depends, HTTPException, Response, Cookie
-from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session, select
 from pydantic import BaseModel
 from passlib.context import CryptContext
@@ -22,7 +21,6 @@ class UserParams(BaseModel):
     password: str
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 
@@ -39,9 +37,7 @@ def register(
     if existing:
         raise HTTPException(status_code=400, detail="Username already taken")
 
-    user = User(
-        username=data.username, password=hash_password(data.password)  # ← HASH HERE
-    )
+    user = User(username=data.username, password=hash_password(data.password))
 
     session.add(user)
     session.commit()
