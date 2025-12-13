@@ -25,8 +25,7 @@ export const useInviteMessageStore = defineStore("inviteMessage", {
          }
          if (msg.type === "room_joined") {
             if (!loggedInUserId) return;
-            console.log(msg);
-            
+
             this.roomDetails = {
                roomId: msg.room_id,
                fighter: msg.you_are,

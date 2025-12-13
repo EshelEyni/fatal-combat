@@ -3,7 +3,7 @@ from ..utils.send_to import send_to
 
 
 async def leave_room(websocket, data):
-    user_id = data["user_id"]
+    user_id = data["userId"]
 
     room_id = None
     for rid, room in active_rooms.items():
