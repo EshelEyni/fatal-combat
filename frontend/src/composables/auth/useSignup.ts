@@ -12,7 +12,6 @@ export const useSignup = () => {
    } = useMutation({
       mutationFn: authApiService.signup,
       onSuccess: data => {
-         console.log("Signup success:", data);
          queryClient.setQueryData(["loggedInUser"], data);
       },
       onError: (e: Error) => {

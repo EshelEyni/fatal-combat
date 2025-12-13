@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 from jose import jwt
 from dotenv import load_dotenv
+from fastapi import Response
 
 load_dotenv()  # loads .env file
 
@@ -32,3 +33,15 @@ def create_access_token(data: dict):
 
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+
+def set_auth_cookie(response: Response, token: str):
+    response.set_cookie(
+        key="fatalCombatJWT",
+        value=token,
+        httponly=True,
+        secure=False,  # change to True in production with HTTPS
+        samesite="lax",
+        max_age=60 * 60,
+        path="/",
+    )

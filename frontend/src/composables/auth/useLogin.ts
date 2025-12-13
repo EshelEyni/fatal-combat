@@ -12,8 +12,6 @@ export const useLogin = () => {
    } = useMutation({
       mutationFn: authApiService.login,
       onSuccess: data => {
-         console.log("Login success:", data);
-
          queryClient.setQueryData(["loggedInUser"], data);
       },
       onError: (e: Error) => {
