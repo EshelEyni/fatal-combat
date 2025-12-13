@@ -70,5 +70,8 @@ export const useInviteMessageStore = defineStore("inviteMessage", {
             inv => now - inv.receivedAt <= FIFTEEN_MINUTES_MS,
          );
       },
+      clearRoomDetails() {
+         this.roomDetails = null;
+      },
    },
 });

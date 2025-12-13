@@ -38,7 +38,7 @@ watch([isConnected, loggedInUser], ([newConnectionStatus, newLoggedInUser]) => {
    if (!newConnectionStatus || !newLoggedInUser) return;
    webSocketStore.send({
       type: "join_lobby",
-      userId: newLoggedInUser.id,
+      user: newLoggedInUser,
    });
 });
 </script>

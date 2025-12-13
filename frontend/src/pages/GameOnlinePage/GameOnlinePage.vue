@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { onUnmounted, ref, watch } from "vue";
 import { useOnlineUsersStore } from "../../store/users";
 import { storeToRefs } from "pinia";
 import { useWebSocketStore } from "../../store/websocket";
@@ -54,6 +54,10 @@ const gameCanvasComponent = ref<InstanceType<typeof GameScreen> | null>(null);
 watch(gameCanvasComponent, () => {
    if (!gameCanvasComponent.value) return;
    canvasEl.value = gameCanvasComponent.value.canvasRef;
+});
+
+onUnmounted(() => {
+   inviteMessageStore.clearRoomDetails();
 });
 </script>
 

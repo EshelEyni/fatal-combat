@@ -1,6 +1,8 @@
+import type { User } from "./user";
+
 export interface SocketJoinLobbyMessage {
    type: "join_lobby";
-   userId: string;
+   user: User;
 }
 
 export interface SocketAcceptGameInviteMessage {
