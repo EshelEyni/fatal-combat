@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { UserSchema } from "../user";
+import { Player1KeySchema, Player2KeySchema } from "../keys";
 
 const SocketJoinLobbyMessageSchema = z.object({
    type: z.literal("join_lobby"),
@@ -14,8 +15,8 @@ const SocketAcceptGameInviteMessageSchema = z.object({
 
 const SocketKeyEventMessageSchema = z.object({
    type: z.literal("key_event"),
-   key: z.string(),
-   room_id: z.number(),
+   key: z.union([Player1KeySchema, Player2KeySchema]),
+   room_id: z.string(),
    user_id: z.number(),
    pressed: z.boolean(),
 });

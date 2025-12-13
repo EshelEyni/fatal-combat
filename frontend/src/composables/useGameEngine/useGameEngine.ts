@@ -13,6 +13,11 @@ import { handlePlayerMovement } from "./utils/movement";
 import { createAIDecisionEngine } from "./utils/createAIDecisionEngine";
 import { useWebSocketStore } from "../../store/websocket";
 import type { RoomDetails } from "../../schemas/roomDetails";
+import {
+   SocketOpponentKeyEventMessageSchema,
+   type SocketOpponentKeyEventMessage,
+} from "../../schemas/socketMessages/serverSocketMessages";
+import { isAllowedKey } from "../../schemas/keys";
 
 export function useGameEngine(
    gameMode: GameMode,
@@ -151,12 +156,11 @@ export function useGameEngine(
    };
 
    const onKeyDown = (event: KeyboardEvent) => {
-      const disabled = isKeyDisabled(event.code);
-      if (disabled) return;
+      if (!isAllowedKey(event.code)) return;
 
       handleKeyDownEvent(event.code);
 
-      if (!roomDetails?.value) return;
+      if (!roomDetails?.value || isKeyDisabled(event.code)) return;
 
       webSocketStore.send({
          type: "key_event",
@@ -168,12 +172,11 @@ export function useGameEngine(
    };
 
    const onKeyUp = (event: KeyboardEvent) => {
-      const disabled = isKeyDisabled(event.code);
-      if (disabled) return;
+      if (!isAllowedKey(event.code)) return;
 
       handleKeyUpEvent(event.code);
 
-      if (!roomDetails?.value) return;
+      if (!roomDetails?.value || isKeyDisabled(event.code)) return;
 
       webSocketStore.send({
          type: "key_event",
@@ -265,15 +268,12 @@ export function useGameEngine(
       handlePlayer2KeyUpEvent(keyCode);
    };
 
-   const handleSocketKeyEventMessage = (event: MessageEvent<any>) => {
-      const msg = JSON.parse(event.data);
-      if (msg.type === "opponent_key_event") {
-         if (msg.pressed) {
-            handleKeyDownEvent(msg.key);
-         } else {
-            handleKeyUpEvent(msg.key);
-         }
-      }
+   const handleSocketKeyEventMessage = (event: MessageEvent<SocketOpponentKeyEventMessage>) => {
+      const res = SocketOpponentKeyEventMessageSchema.safeParse(event.data);
+      if (!res.success) return;
+      const { key, pressed } = res.data;
+      if (pressed) handleKeyDownEvent(key);
+      else handleKeyUpEvent(key);
    };
 
    watch(canvasEl, canvas => {
@@ -289,9 +289,7 @@ export function useGameEngine(
    onMounted(() => {
       if (gameMode !== GameMode.ONLINE_MULTIPLAYER) return;
 
-      webSocketStore.socket?.addEventListener("message", event => {
-         handleSocketKeyEventMessage(event);
-      });
+      webSocketStore.socket?.addEventListener("message", handleSocketKeyEventMessage);
    });
 
    onBeforeUnmount(() => {
@@ -301,9 +299,7 @@ export function useGameEngine(
 
       if (gameMode !== GameMode.ONLINE_MULTIPLAYER) return;
 
-      webSocketStore.socket?.removeEventListener("message", event => {
-         handleSocketKeyEventMessage(event);
-      });
+      webSocketStore.socket?.removeEventListener("message", handleSocketKeyEventMessage);
    });
 
    return { canvasEl, background, shop, player_1, player_2, keysState };
