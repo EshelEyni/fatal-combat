@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { User } from "../type/user";
+import type { User } from "../schemas/user";
 import type { ServerSocketMessage } from "../type/serverSocketMessage";
 
 export const useOnlineUsersStore = defineStore("onlineUsers", {
@@ -9,7 +9,7 @@ export const useOnlineUsersStore = defineStore("onlineUsers", {
    getters: {
       onlineCount: state => state.onlineUsers.length,
 
-      getUserById: state => (id: string) => {
+      getUserById: state => (id: number) => {
          return state.onlineUsers.find(u => u.id === id);
       },
    },
